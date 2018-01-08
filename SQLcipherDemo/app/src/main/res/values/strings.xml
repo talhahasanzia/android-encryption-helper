@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">SQLcipherDemo</string>
+    <string name="database_name">sample_db</string>
 </resources>
