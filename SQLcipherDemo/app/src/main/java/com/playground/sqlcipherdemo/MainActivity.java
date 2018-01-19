@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.util.Log;
 
 import net.sqlcipher.database.SQLiteDatabase;
-import net.sqlcipher.database.SQLiteException;
+
+import java.util.Arrays;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,12 +18,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // initialize this in app object, SQLite cipher library
         SQLiteDatabase.loadLibs(this);
 
-
+        // first time calls db and encrypt it with old password
         mDbUtil = new DbUtil(this);
 
-        //mDbUtil.resetTable();
+        //mDbUtil.dropTable(); // remove all data
 
 
     }
@@ -30,12 +33,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-      /*  Log.d("MainActivity", "onResume: Insert :: "+mDbUtil.insertIntoTable("person alan"));
-        Log.d("MainActivity", "onResume: Insert :: "+mDbUtil.insertIntoTable("person bret"));
-        Log.d("MainActivity", "onResume: Insert :: "+mDbUtil.insertIntoTable("person charlie"));
-        Log.d("MainActivity", "onResume: Insert :: "+mDbUtil.insertIntoTable("person dave"));
-        Log.d("MainActivity", "onResume: Insert :: "+mDbUtil.insertIntoTable("person eggsy"));
-*/
+        //insertDummyData(); // populate table for data
 
         for (String name : mDbUtil.getDataFromTable()) {
 
@@ -44,13 +42,23 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void insertDummyData() {
+        Log.d("MainActivity", "onResume: Inserted :: "+mDbUtil.insertIntoTable("person alan"));
+        Log.d("MainActivity", "onResume: Inserted :: "+mDbUtil.insertIntoTable("person bret"));
+        Log.d("MainActivity", "onResume: Inserted :: "+mDbUtil.insertIntoTable("person charlie"));
+        Log.d("MainActivity", "onResume: Inserted :: "+mDbUtil.insertIntoTable("person dave"));
+        Log.d("MainActivity", "onResume: Inserted :: "+mDbUtil.insertIntoTable("person eggsy"));
+    }
+
     @Override
     protected void onStop() {
         super.onStop();
 
+        // close db for to avoid IO leaks
         mDbUtil.close();
 
     }
+
 
 
 }

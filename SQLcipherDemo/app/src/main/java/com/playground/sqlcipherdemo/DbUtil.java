@@ -12,7 +12,6 @@ import net.sqlcipher.database.SQLiteDatabase;
  * Created by Talha Hasan Zia on 08-Jan-18.
  * <p></p><b>Description:</b><p></p> Utility class for Database dummy operations.
  * <p></p>
- * <b>Public Methods:</b><p></p> Only listing to public methods usage.
  */
 public class DbUtil {
 
@@ -22,19 +21,46 @@ public class DbUtil {
 
     private final String old_password = "pass_old_123";
 
-    private final String new_password = "pass_new_abc";
 
-
+    /**
+     * Instantiates a new Db util.
+     *
+     * @param context the context
+     */
     public DbUtil(Context context) {
         this.context = context;
         mDbHelper = new DbHelper(context, context.getString(R.string.database_name), null, BuildConfig.VERSION_CODE);
 
         mSQLiteDatabase = mDbHelper.getWritableDatabase(old_password);
-        pragmaRekey();
-        mSQLiteDatabase = mDbHelper.getWritableDatabase(new_password);
+        }
+
+
+    /**
+     * Instantiates a new Db util using new randomly generated password.
+     * Has option to rekey if this call is made first.
+     *
+     * @param context        the context of app
+     * @param randomPassword the random password generated in caller activity
+     * @param rekeyNeeded    if the rekey is needed
+     */
+    public DbUtil(Context context, String randomPassword, boolean rekeyNeeded) {
+        this.context = context;
+        mDbHelper = new DbHelper(context, context.getString(R.string.database_name), null, BuildConfig.VERSION_CODE);
+
+        mSQLiteDatabase = mDbHelper.getWritableDatabase(old_password);
+
+        if(rekeyNeeded)
+        pragmaRekey(randomPassword);
+
+        mSQLiteDatabase = mDbHelper.getWritableDatabase(randomPassword);
     }
 
-
+    /**
+     * Insert into table return long ID of row.
+     *
+     * @param name the name data to be inserted
+     * @return the long id of row
+     */
     public long insertIntoTable(String name) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(DbHelper.DatabaseContract.NAME_FIELD, name);
@@ -45,15 +71,27 @@ public class DbUtil {
         return result;
     }
 
-    public void pragmaRekey() {
+
+    /**
+     * Pragma rekey operations.
+     *
+     * @param newPassword the new password to be applied.
+     */
+    public void pragmaRekey(String newPassword) {
         String keyCommand = String.format("PRAGMA key  = \"%s\";", old_password);
-        String rekeyCommand = String.format("PRAGMA rekey  = \"%s\";", new_password);
+        String rekeyCommand = String.format("PRAGMA rekey  = \"%s\";", newPassword);
 
         mSQLiteDatabase.execSQL(keyCommand);
         mSQLiteDatabase.execSQL(rekeyCommand);
 
     }
 
+
+    /**
+     * Get data from table  as string array.
+     *
+     * @return the string array of names from table
+     */
     public String[] getDataFromTable() {
         String[] results;
 
@@ -61,27 +99,22 @@ public class DbUtil {
 
         results = new String[cursor.getCount()];
 
-        /*cursor.moveToFirst();
-        Log.d("MainActivity", "getDataFromTable: Count :: "+cursor.getCount());
-
-        int index = 0;
-        do {
-        */
 
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-            // do what you need with the cursor here
+           // get data row by row
             results[cursor.getPosition()] = cursor.getString(cursor.getColumnIndex(DbHelper.DatabaseContract.NAME_FIELD));
         }
 
-        /*} while (cursor.moveToNext());
-*/
         cursor.close();
 
         return results;
     }
 
 
-    public void resetTable() {
+    /**
+     * Drops table.
+     */
+    public void dropTable() {
         mSQLiteDatabase.execSQL("DROP TABLE IF EXISTS " + DbHelper.DatabaseContract.TABLE_NAME);
 
         mSQLiteDatabase.execSQL(DbHelper.DatabaseContract.CREATE_DUMMY_TABLE);
@@ -89,6 +122,9 @@ public class DbUtil {
     }
 
 
+    /**
+     * Close db object.
+     */
     public void close() {
         mSQLiteDatabase.close();
         mDbHelper.close();
