@@ -1,24 +1,19 @@
 package com.playground.sqlcipherdemo.AndroidKeystore;
 
 import android.content.Context;
-import android.security.keystore.KeyGenParameterSpec;
-import android.security.keystore.KeyProperties;
 
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.KeyStore;
+import java.security.InvalidKeyException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.security.PrivateKey;
+import java.security.UnrecoverableEntryException;
 import java.security.cert.CertificateException;
 import java.util.Arrays;
 import java.util.Random;
 
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
+import javax.crypto.NoSuchPaddingException;
 
 /**
  * Created by Talha Hasan Zia on 19-Jan-18.
@@ -41,10 +36,10 @@ public class KeyManager {
     }
 
     private KeyManager(Context context) {
-        this.context=context;
+        this.context = context;
 
         try {
-            keystoreHelper=new KeystoreHelper(context);
+            keystoreHelper = new KeystoreHelper(context);
         } catch (KeyStoreException e) {
             e.printStackTrace();
         } catch (NoSuchAlgorithmException e) {
@@ -56,15 +51,6 @@ public class KeyManager {
         }
     }
 
-    public PrivateKey getKey(String alias) {
-
-        return null;
-    }
-
-    public PrivateKey getNewKey()
-    {
-        return null;
-    }
 
     public String getNewRandomPhrase() {
 
@@ -72,15 +58,49 @@ public class KeyManager {
     }
 
 
-    public String encryptKey(String plainText) {
+    public String encryptKey(String plainText, String alias) {
 
 
-        return null;
+        try {
+            return keystoreHelper.encryptString(alias, plainText);
+        } catch (NoSuchPaddingException e) {
+            return e.getMessage();
+        } catch (NoSuchAlgorithmException e) {
+            return e.getMessage();
+        } catch (NoSuchProviderException e) {
+            return e.getMessage();
+        } catch (InvalidKeyException e) {
+            return e.getMessage();
+        } catch (IOException e) {
+            return e.getMessage();
+        } catch (UnrecoverableEntryException e) {
+            return e.getMessage();
+        } catch (KeyStoreException e) {
+            return e.getMessage();
+        } catch (InvalidAlgorithmParameterException e) {
+            return e.getMessage();
+        }
     }
 
-    public String decryptKey(String encryptedText) {
+    public String decryptKey(String encryptedText, String alias) {
 
-        return null;
+        try {
+            return keystoreHelper.decryptString(alias, encryptedText);
+        } catch (UnrecoverableEntryException e) {
+            return e.getMessage();
+        } catch (NoSuchAlgorithmException e) {
+            return e.getMessage();
+        } catch (KeyStoreException e) {
+            return e.getMessage();
+        } catch (NoSuchProviderException e) {
+            return e.getMessage();
+        } catch (NoSuchPaddingException e) {
+            return e.getMessage();
+        } catch (InvalidKeyException e) {
+            return e.getMessage();
+        } catch (IOException e) {
+            return e.getMessage();
+        }
     }
 
 
@@ -104,11 +124,6 @@ public class KeyManager {
 
         return Arrays.toString(randomData);
     }
-
-    void generatingNewEntries() {
-
-    }
-
 
 
 }

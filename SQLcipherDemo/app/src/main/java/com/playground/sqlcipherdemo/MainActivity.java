@@ -1,7 +1,7 @@
 package com.playground.sqlcipherdemo;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.playground.sqlcipherdemo.AndroidKeystore.KeyManager;
@@ -26,17 +26,18 @@ public class MainActivity extends AppCompatActivity {
 
         //mDbUtil.dropTable(); // remove all data
 
-        keyManager=KeyManager.getInstance(this);
+        String alias="test_alias7";
+        keyManager = KeyManager.getInstance(this);
 
-        String key=keyManager.getNewRandomPhrase();
+        String key = keyManager.getNewRandomPhrase();
+        Log.d("Keystore", "onCreate: key " + key);
+        String encrypted = keyManager.encryptKey(key,alias);
 
-        String encrypted=keyManager.encryptKey(key);
+        Log.d("Keystore", "onCreate: encrypted " + encrypted);
 
-        Log.d("Key", "onCreate: encrypted "+encrypted);
+        String decrypted = keyManager.decryptKey(encrypted, alias);
 
-        String decrypted=keyManager.decryptKey(encrypted);
-
-        Log.d("key", "onCreate: decrypted "+decrypted);
+        Log.d("Keystore", "onCreate: decrypted " + decrypted);
 
 
     }
@@ -55,11 +56,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void insertDummyData() {
-        Log.d("MainActivity", "onResume: Inserted :: "+mDbUtil.insertIntoTable("person alan"));
-        Log.d("MainActivity", "onResume: Inserted :: "+mDbUtil.insertIntoTable("person bret"));
-        Log.d("MainActivity", "onResume: Inserted :: "+mDbUtil.insertIntoTable("person charlie"));
-        Log.d("MainActivity", "onResume: Inserted :: "+mDbUtil.insertIntoTable("person dave"));
-        Log.d("MainActivity", "onResume: Inserted :: "+mDbUtil.insertIntoTable("person eggsy"));
+        Log.d("MainActivity", "onResume: Inserted :: " + mDbUtil.insertIntoTable("person alan"));
+        Log.d("MainActivity", "onResume: Inserted :: " + mDbUtil.insertIntoTable("person bret"));
+        Log.d("MainActivity", "onResume: Inserted :: " + mDbUtil.insertIntoTable("person charlie"));
+        Log.d("MainActivity", "onResume: Inserted :: " + mDbUtil.insertIntoTable("person dave"));
+        Log.d("MainActivity", "onResume: Inserted :: " + mDbUtil.insertIntoTable("person eggsy"));
     }
 
     @Override
@@ -70,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
         mDbUtil.close();
 
     }
-
 
 
 }

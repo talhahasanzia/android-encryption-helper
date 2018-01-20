@@ -1,8 +1,14 @@
 package com.playground.sqlcipherdemo.AndroidKeystore;
 
 import android.content.Context;
+import android.os.Build;
 import android.security.KeyPairGeneratorSpec;
+import android.security.keystore.KeyGenParameterSpec;
+import android.security.keystore.KeyProperties;
 import android.util.Base64;
+import android.util.Log;
+
+import com.playground.sqlcipherdemo.BuildConfig;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -20,10 +26,10 @@ import java.security.UnrecoverableEntryException;
 import java.security.cert.CertificateException;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.security.spec.AlgorithmParameterSpec;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.GregorianCalendar;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
@@ -37,16 +43,13 @@ import javax.security.auth.x500.X500Principal;
  * <p></p>
  * <b>Public Methods:</b><p></p> Only listing to public methods usage.
  */
-public class KeystoreHelper {
+class KeystoreHelper {
     private static final String CIPHER_TYPE = "RSA/ECB/PKCS1Padding";
     private static final String CIPHER_PROVIDER = "AndroidOpenSSL";
     private static final String ALGORITHM = "RSA";
-    private static final String PRINCIPLE = "CN=Sample Name, O=Android Authority";
-    private static final String KEYSTORE = "AndroidKeystore";
-    private static final String CHARSET="UTF-8";
-
-
-    private List<String> keyAliases;
+    private static final String PRINCIPLE = "CN=ABC, O=Android Authority";
+    private static final String KEYSTORE = "AndroidKeyStore";
+    private static final String CHARSET = "UTF-8";
 
 
     private Context context;
@@ -59,27 +62,16 @@ public class KeystoreHelper {
     }
 
     private void initKeystore() throws KeyStoreException, NoSuchAlgorithmException, IOException, CertificateException {
+
         keyStore = KeyStore.getInstance(KEYSTORE);
 
         keyStore.load(null);
 
 
-        refreshKeys();
-
-
     }
 
-    public List<String> refreshKeys() throws KeyStoreException {
-        keyAliases = new ArrayList<>();
-        Enumeration<String> aliases = keyStore.aliases();
-        while (aliases.hasMoreElements()) {
-            keyAliases.add(aliases.nextElement());
-        }
-        return keyAliases;
 
-    }
-
-    public KeyPair createNewKeys(String alias) throws NullPointerException, KeyStoreException, InvalidAlgorithmParameterException, NoSuchProviderException, NoSuchAlgorithmException {
+    public void createNewKeysIfNotExist(String alias) throws NullPointerException, KeyStoreException, InvalidAlgorithmParameterException, NoSuchProviderException, NoSuchAlgorithmException {
         KeyPair keyPair = null;
 
         // Create new key if needed
@@ -97,34 +89,28 @@ public class KeystoreHelper {
             KeyPairGenerator generator = KeyPairGenerator.getInstance(ALGORITHM, KEYSTORE);
             generator.initialize(spec);
 
-            keyPair = generator.generateKeyPair();
+            generator.generateKeyPair();
 
         }
-        refreshKeys();
-
-        return keyPair;
-    }
-
-    public void deleteKey(final String alias) throws KeyStoreException {
-        keyStore.deleteEntry(alias);
-        refreshKeys();
 
     }
 
-    public String encryptString(String alias, String initialText) throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException, IOException, UnrecoverableEntryException, KeyStoreException {
+
+    public String encryptString(String alias, String plainText) throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException, IOException, UnrecoverableEntryException, KeyStoreException, InvalidAlgorithmParameterException {
         String encryptedText = "";
-
+        createKeys(context,alias);
         KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry) keyStore.getEntry(alias, null);
         RSAPublicKey publicKey = (RSAPublicKey) privateKeyEntry.getCertificate().getPublicKey();
 
 
-        Cipher inCipher = Cipher.getInstance(CIPHER_TYPE, CIPHER_PROVIDER);
+
+        Cipher inCipher = Cipher.getInstance(CIPHER_TYPE);
         inCipher.init(Cipher.ENCRYPT_MODE, publicKey);
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         CipherOutputStream cipherOutputStream = new CipherOutputStream(
                 outputStream, inCipher);
-        cipherOutputStream.write(initialText.getBytes(CHARSET));
+        cipherOutputStream.write(plainText.getBytes(CHARSET));
         cipherOutputStream.close();
 
         byte[] vals = outputStream.toByteArray();
@@ -134,12 +120,13 @@ public class KeystoreHelper {
     }
 
     public String decryptString(String alias, String encryptedText) throws UnrecoverableEntryException, NoSuchAlgorithmException, KeyStoreException, NoSuchProviderException, NoSuchPaddingException, InvalidKeyException, IOException {
+
         String decryptedText = "";
         KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry) keyStore.getEntry(alias, null);
-        RSAPrivateKey privateKey = (RSAPrivateKey) privateKeyEntry.getPrivateKey();
+//        RSAPrivateKey privateKey = (RSAPrivateKey) privateKeyEntry.getPrivateKey();
 
-        Cipher output = Cipher.getInstance(CIPHER_TYPE, CIPHER_PROVIDER);
-        output.init(Cipher.DECRYPT_MODE, privateKey);
+        Cipher output = Cipher.getInstance(CIPHER_TYPE);
+        output.init(Cipher.DECRYPT_MODE, privateKeyEntry.getPrivateKey());
 
         String cipherText = encryptedText;
         CipherInputStream cipherInputStream = new CipherInputStream(
@@ -160,6 +147,69 @@ public class KeystoreHelper {
 
 
         return decryptedText;
+    }
+
+
+    public void createKeys(Context context, String alias) throws NoSuchProviderException,
+            NoSuchAlgorithmException, InvalidAlgorithmParameterException, KeyStoreException {
+        // BEGIN_INCLUDE(create_valid_dates)
+        // Create a start and end time, for the validity range of the key pair that's about to be
+        // generated.
+
+        if (!keyStore.containsAlias(alias)) {
+            Calendar start = new GregorianCalendar();
+            Calendar end = new GregorianCalendar();
+            end.add(Calendar.YEAR, 100);
+            //END_INCLUDE(create_valid_dates)
+
+            // BEGIN_INCLUDE(create_keypair)
+            // Initialize a KeyPair generator using the the intended algorithm (in this example, RSA
+            // and the KeyStore.  This example uses the AndroidKeyStore.
+            KeyPairGenerator kpGenerator = KeyPairGenerator
+                    .getInstance(ALGORITHM,
+                            KEYSTORE);
+            // END_INCLUDE(create_keypair)
+
+            // BEGIN_INCLUDE(create_spec)
+            // The KeyPairGeneratorSpec object is how parameters for your key pair are passed
+            // to the KeyPairGenerator.
+            AlgorithmParameterSpec spec;
+
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                // Below Android M, use the KeyPairGeneratorSpec.Builder.
+
+                spec = new KeyPairGeneratorSpec.Builder(context)
+                        // You'll use the alias later to retrieve the key.  It's a key for the key!
+                        .setAlias(alias)
+                        // The subject used for the self-signed certificate of the generated pair
+                        .setSubject(new X500Principal("CN=" + alias))
+                        // The serial number used for the self-signed certificate of the
+                        // generated pair.
+                        .setSerialNumber(BigInteger.valueOf(1337))
+                        // Date range of validity for the generated pair.
+                        .setStartDate(start.getTime())
+                        .setEndDate(end.getTime())
+                        .build();
+
+
+            } else {
+                // On Android M or above, use the KeyGenparameterSpec.Builder and specify permitted
+                // properties  and restrictions of the key.
+                spec = new KeyGenParameterSpec.Builder(alias, KeyProperties.PURPOSE_SIGN)
+                        .setCertificateSubject(new X500Principal("CN=" + alias))
+                        .setDigests(KeyProperties.DIGEST_SHA256)
+                        .setSignaturePaddings(KeyProperties.SIGNATURE_PADDING_RSA_PKCS1)
+                        .setCertificateSerialNumber(BigInteger.valueOf(1337))
+                        .setCertificateNotBefore(start.getTime())
+                        .setCertificateNotAfter(end.getTime())
+                        .build();
+            }
+
+            kpGenerator.initialize(spec);
+
+            KeyPair kp = kpGenerator.generateKeyPair();
+            Log.d("Public Key: " , kp.getPublic().toString());
+        }
     }
 
 }
