@@ -1,7 +1,24 @@
 package com.playground.sqlcipherdemo.AndroidKeystore;
 
+import android.content.Context;
+import android.security.keystore.KeyGenParameterSpec;
+import android.security.keystore.KeyProperties;
+
+import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.PrivateKey;
+import java.security.cert.CertificateException;
 import java.util.Arrays;
 import java.util.Random;
+
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 /**
  * Created by Talha Hasan Zia on 19-Jan-18.
@@ -9,28 +26,61 @@ import java.util.Random;
  * <p></p>
  */
 public class KeyManager {
-    private static final KeyManager ourInstance = new KeyManager();
 
-    public static KeyManager getInstance() {
-        return ourInstance;
+
+    private static KeyManager instance;
+    private KeystoreHelper keystoreHelper;
+    private Context context;
+
+
+    public static KeyManager getInstance(Context context) {
+        if (instance == null)
+            instance = new KeyManager(context);
+
+        return instance;
     }
 
-    public String getKey(String inputEncryptedText) {
+    private KeyManager(Context context) {
+        this.context=context;
+
+        try {
+            keystoreHelper=new KeystoreHelper(context);
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (CertificateException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public PrivateKey getKey(String alias) {
 
         return null;
     }
+
+    public PrivateKey getNewKey()
+    {
+        return null;
+    }
+
+    public String getNewRandomPhrase() {
+
+        return getRandomText();
+    }
+
 
     public String encryptKey(String plainText) {
+
+
         return null;
     }
-
 
     public String decryptKey(String encryptedText) {
 
         return null;
-    }
-
-    private KeyManager() {
     }
 
 
@@ -54,6 +104,11 @@ public class KeyManager {
 
         return Arrays.toString(randomData);
     }
+
+    void generatingNewEntries() {
+
+    }
+
 
 
 }

@@ -4,14 +4,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
-import net.sqlcipher.database.SQLiteDatabase;
+import com.playground.sqlcipherdemo.AndroidKeystore.KeyManager;
 
-import java.util.Arrays;
-import java.util.Random;
+import net.sqlcipher.database.SQLiteDatabase;
 
 public class MainActivity extends AppCompatActivity {
 
     private DbUtil mDbUtil;
+    public KeyManager keyManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +25,18 @@ public class MainActivity extends AppCompatActivity {
         mDbUtil = new DbUtil(this);
 
         //mDbUtil.dropTable(); // remove all data
+
+        keyManager=KeyManager.getInstance(this);
+
+        String key=keyManager.getNewRandomPhrase();
+
+        String encrypted=keyManager.encryptKey(key);
+
+        Log.d("Key", "onCreate: encrypted "+encrypted);
+
+        String decrypted=keyManager.decryptKey(encrypted);
+
+        Log.d("key", "onCreate: decrypted "+decrypted);
 
 
     }
