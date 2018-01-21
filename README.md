@@ -67,6 +67,9 @@ for gradle below 3.0 use:
 
 The demo project implements a use-case where database password is securely saved in shared preferences in encrypted form. No one can open database without decrypted password. This encrypted text can only be decrypted at runtime using private keys provided by KeyStore API against specified alias.
 
+* [SQLCipher Demo](https://github.com/talhahasanzia/android-encryption-helper/tree/master/android-encryption-helper/app)
+* [Simple Encryption Demo](https://github.com/talhahasanzia/simplified-demo/)
+
 ## Contributing
 
 Contributions are welcomed as long as they dont break the code. Please create an issue and have a discussion before pull request.
