@@ -32,7 +32,7 @@ for gradle below 3.0 use:
 ```
     compile 'com.github.talhahasanzia:android-encryption-helper:v0.1d'
 ```
-### Using in your project
+## Using in your project
 
 * **Step 1- KeyStoreManager object:** Get an instance to KeyStoreManager using getInstance()
 ```
