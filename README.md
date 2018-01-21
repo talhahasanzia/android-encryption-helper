@@ -6,7 +6,7 @@ Simple Encryption-Decryption Helper classes for storing text data securely in An
 
 
 ## Release
-[v0.1d](https://github.com/talhahasanzia/android-encryption-helper/releases/tag/v0.1d) on [jitpack.io](https://jitpack.io/#talhahasanzia/android-encryption-helper/v0.1d) 
+Available Version:  [v0.1d](https://github.com/talhahasanzia/android-encryption-helper/releases/tag/v0.1d) on [jitpack.io](https://jitpack.io/#talhahasanzia/android-encryption-helper/v0.1d) 
 
 ## Getting Started
 ### Prerequisites
@@ -20,13 +20,14 @@ In your project level gradle, add:
     maven { url "http://jitpack.io" }
 ```
 
-In your app level gradle, add:
+In your app level gradle (4.0), add:
 ```
     implementation 'com.github.talhahasanzia:android-encryption-helper:v0.1d'
 ```
-for gradle below 3.0 use "compile" instead of "implementation".
-
-
+for gradle below 3.0 use:
+```
+    compile 'com.github.talhahasanzia:android-encryption-helper:v0.1d'
+```
 ### Using in your project
 
 * **Step 1 KeyStoreManager object:** Get an instance to KeyStoreManager using getInstance()
@@ -37,7 +38,7 @@ for gradle below 3.0 use "compile" instead of "implementation".
 ```
     String randomPhrase=keyStoreManager.getNewRandomPhrase();
 ```
-* **Step 3 Encrypt:** Prepare data to be encrypted, in case of generating some random data use:
+* **Step 3 Encrypt:** Call encrypt with specified Alias to start encryption.
 ```
     String encrypt=keyStoreManager.encryptData(randomPhrase,"testAlias");
 ```
