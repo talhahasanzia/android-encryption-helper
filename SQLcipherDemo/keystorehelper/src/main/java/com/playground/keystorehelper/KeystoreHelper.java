@@ -1,4 +1,4 @@
-package com.playground.sqlcipherdemo.AndroidKeystore;
+package com.playground.keystorehelper;
 
 import android.content.Context;
 import android.os.Build;
@@ -7,8 +7,6 @@ import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import android.util.Base64;
 import android.util.Log;
-
-import com.playground.sqlcipherdemo.BuildConfig;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -24,7 +22,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.UnrecoverableEntryException;
 import java.security.cert.CertificateException;
-import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.AlgorithmParameterSpec;
 import java.util.ArrayList;

@@ -9,50 +9,54 @@ import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 
 /**
- * Created by Talha Hasan Zia on 08-Jan-18.
  * <p></p><b>Description:</b><p></p> Utility class for Database dummy operations.
  * <p></p>
  */
 public class DbUtil {
 
-    private Context context;
-    private SQLiteDatabase mSQLiteDatabase;
-    private DbHelper mDbHelper;
+    private Context context; // app's context
+    private SQLiteDatabase mSQLiteDatabase; // Sqlite Database object
+    private DbHelper mDbHelper; // SQLiteHelper
 
-    private final String old_password = "pass_old_123";
-
+    private final String old_password = "pass_old_123"; // for tests
 
     /**
-     * Instantiates a new Db util.
+     * Instantiates a new DbUtil using password.
      *
-     * @param context the context
+     * @param context    the context of app
+     * @param passPhrase the password generated in caller activity
      */
-    public DbUtil(Context context) {
+    public DbUtil(Context context, String passPhrase) {
         this.context = context;
         mDbHelper = new DbHelper(context, context.getString(R.string.database_name), null, BuildConfig.VERSION_CODE);
 
-        mSQLiteDatabase = mDbHelper.getWritableDatabase(old_password);
-        }
+        mSQLiteDatabase = mDbHelper.getWritableDatabase(passPhrase);
+
+        mSQLiteDatabase = mDbHelper.getWritableDatabase(passPhrase);
+    }
 
 
     /**
-     * Instantiates a new Db util using new randomly generated password.
-     * Has option to rekey if this call is made first.
+     * Instantiates a new DbUtil using password.
+     * Has option to rekey if this call is to change database password.
      *
-     * @param context        the context of app
-     * @param randomPassword the random password generated in caller activity
-     * @param rekeyNeeded    if the rekey is needed
+     * @param context     the context of app
+     * @param oldPassword the old password
+     * @param newPassword the new password
+     * @param rekeyNeeded if the rekey is needed
      */
-    public DbUtil(Context context, String randomPassword, boolean rekeyNeeded) {
+    public DbUtil(Context context, String oldPassword, String newPassword, boolean rekeyNeeded) {
+
         this.context = context;
+
         mDbHelper = new DbHelper(context, context.getString(R.string.database_name), null, BuildConfig.VERSION_CODE);
 
-        mSQLiteDatabase = mDbHelper.getWritableDatabase(old_password);
+        mSQLiteDatabase = mDbHelper.getWritableDatabase(oldPassword);
 
-        if(rekeyNeeded)
-        pragmaRekey(randomPassword);
+        if (rekeyNeeded) // not running rekey will cause failure to retrieve db with new key
+            pragmaRekey(oldPassword, newPassword);
 
-        mSQLiteDatabase = mDbHelper.getWritableDatabase(randomPassword);
+        mSQLiteDatabase = mDbHelper.getWritableDatabase(oldPassword);
     }
 
     /**
@@ -74,11 +78,11 @@ public class DbUtil {
 
     /**
      * Pragma rekey operations.
-     *
+     * @param oldPassword old password that was used to encrypt
      * @param newPassword the new password to be applied.
      */
-    public void pragmaRekey(String newPassword) {
-        String keyCommand = String.format("PRAGMA key  = \"%s\";", old_password);
+    public void pragmaRekey(String oldPassword,String newPassword) {
+        String keyCommand = String.format("PRAGMA key  = \"%s\";", oldPassword);
         String rekeyCommand = String.format("PRAGMA rekey  = \"%s\";", newPassword);
 
         mSQLiteDatabase.execSQL(keyCommand);
@@ -101,7 +105,7 @@ public class DbUtil {
 
 
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-           // get data row by row
+            // get data row by row
             results[cursor.getPosition()] = cursor.getString(cursor.getColumnIndex(DbHelper.DatabaseContract.NAME_FIELD));
         }
 

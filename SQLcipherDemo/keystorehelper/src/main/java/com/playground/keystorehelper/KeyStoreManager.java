@@ -1,4 +1,4 @@
-package com.playground.sqlcipherdemo.AndroidKeystore;
+package com.playground.keystorehelper;
 
 import android.content.Context;
 
@@ -16,26 +16,36 @@ import java.util.Random;
 import javax.crypto.NoSuchPaddingException;
 
 /**
- * Created by Talha Hasan Zia on 19-Jan-18.
- * <p></p><b>Description:</b><p></p> Key manager class for encryption decryption.
+ * <b>Description:</b><p></p> KeyStoreManager class for encryption decryption.
  * <p></p>
+ * <b>Public Methods:</b>
+ * <p></p>
+ * <b>{@link #getInstance(Context)}:</b> to get an instance of this class and start using.
+ * <p></p>
+ * <b>{@link #decryptData(String, String)}:</b> to decrypt any encrypted data.
+ * <p></p>
+ *  <b>{@link #encryptData(String, String)}:</b> to encrypt any data.
  */
-public class KeyManager {
+public class KeyStoreManager {
 
 
-    private static KeyManager instance;
-    private KeystoreHelper keystoreHelper;
-    private Context context;
+    private static KeyStoreManager instance; // instance for public usage
+    private KeystoreHelper keystoreHelper; // keystore helper for low level operations
+    private Context context; // app's context
 
 
-    public static KeyManager getInstance(Context context) {
-        if (instance == null)
-            instance = new KeyManager(context);
+    public static KeyStoreManager getInstance(Context context) {
+        if (instance == null) // check for initialization
+            instance = new KeyStoreManager(context); // initialize
 
         return instance;
     }
 
-    private KeyManager(Context context) {
+    /**
+     * Private contructor.
+     * @param context app's context
+     */
+    private KeyStoreManager(Context context) {
         this.context = context;
 
         try {
@@ -51,14 +61,26 @@ public class KeyManager {
         }
     }
 
-
+    /**
+     * Get a random phrase containing numbers and characters, of length 50-100.
+     * @return A random string.
+     */
     public String getNewRandomPhrase() {
 
         return getRandomText();
     }
 
-
-    public String encryptKey(String plainText, String alias) {
+    /**
+     * Use this to encrypt any text or data.
+     * Provide alias to fetch keys from keystore.
+     * If key is not present a new one is generated.
+     * To change this flow you can edit {@link KeystoreHelper} class in library source available at:
+     * https://github.com/talhahasanzia/android-encryption-helper
+     * @param plainText to be encrypted
+     * @param alias alias against which key will be used.
+     * @return an encrypted string
+     */
+    public String encryptData(String plainText, String alias) {
 
 
         try {
@@ -82,7 +104,18 @@ public class KeyManager {
         }
     }
 
-    public String decryptKey(String encryptedText, String alias) {
+    /**
+     * Decrypts an encrypted key against given alias. <p></p>
+     * This will get private key generated against this alias, and use it to decrypt.
+     * If alias dont match or key is not persistent, this decryption will fail.
+     * To change this implementation you can edit {@link KeystoreHelper} class in library source available at:
+     * https://github.com/talhahasanzia/android-encryption-helper
+     *
+     * @param encryptedText Encrypted text that was encrypted using a private key using alias mention in next argument
+     * @param alias alias to use for decryption.
+     * @return plain text if successful decryption happens
+     */
+    public String decryptData(String encryptedText, String alias) {
 
         try {
             return keystoreHelper.decryptString(alias, encryptedText);

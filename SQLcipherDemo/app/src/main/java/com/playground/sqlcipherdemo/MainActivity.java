@@ -4,14 +4,15 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.playground.sqlcipherdemo.AndroidKeystore.KeyManager;
+
+import com.playground.keystorehelper.KeyStoreManager;
 
 import net.sqlcipher.database.SQLiteDatabase;
 
 public class MainActivity extends AppCompatActivity {
 
-    private DbUtil mDbUtil;
-    public KeyManager keyManager;
+    private DbUtil mDbUtil; // sample utility for database operations
+    public KeyStoreManager keyManager;  // library class
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,25 +22,32 @@ public class MainActivity extends AppCompatActivity {
         // initialize this in app object, SQLite cipher library
         SQLiteDatabase.loadLibs(this);
 
-        // first time calls db and encrypt it with old password
-        mDbUtil = new DbUtil(this);
+        SaveDataUtil saveDataUtil = new SaveDataUtil(this);
 
-        //mDbUtil.dropTable(); // remove all data
+        String alias = "test_alias7";
 
-        String alias="test_alias7";
-        keyManager = KeyManager.getInstance(this);
+        keyManager = KeyStoreManager.getInstance(this);
 
-        String key = keyManager.getNewRandomPhrase();
-        Log.d("Keystore", "onCreate: key " + key);
-        String encrypted = keyManager.encryptKey(key,alias);
-
-        Log.d("Keystore", "onCreate: encrypted " + encrypted);
-
-        String decrypted = keyManager.decryptKey(encrypted, alias);
-
-        Log.d("Keystore", "onCreate: decrypted " + decrypted);
+        init(saveDataUtil, alias);
 
 
+    }
+
+    private void init(SaveDataUtil saveDataUtil, String alias) {
+        String key = null;
+        if (saveDataUtil.getSecurityPhrase() == null) {
+            key = keyManager.getNewRandomPhrase();
+
+
+            String encrypted = keyManager.encryptData(key, alias);
+            saveDataUtil.setSecurityPhrase(encrypted);
+        }
+
+        key = saveDataUtil.getSecurityPhrase();
+
+        String decrypted = keyManager.decryptData(key, alias);
+
+        mDbUtil = new DbUtil(this, decrypted);
     }
 
     @Override
@@ -48,6 +56,10 @@ public class MainActivity extends AppCompatActivity {
 
         //insertDummyData(); // populate table for data
 
+
+        // check if key encryption operations were performed successfully
+        // if its successful then it should show data
+        // remember to call inserDummyData() at least once to populate some data
         for (String name : mDbUtil.getDataFromTable()) {
 
             Log.d("MainActivity", "result from db: " + name);

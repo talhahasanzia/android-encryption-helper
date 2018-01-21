@@ -6,10 +6,8 @@ import net.sqlcipher.database.SQLiteDatabase;
 import net.sqlcipher.database.SQLiteOpenHelper;
 
 /**
- * Created by Talha Hasan Zia on 08-Jan-18.
- * <p></p><b>Description:</b><p></p> Why class was created?
+ * <p></p><b>Description:</b><p></p> SQLiteHelper implementation.
  * <p></p>
- * <b>Public Methods:</b><p></p> Only listing to public methods usage.
  */
 public class DbHelper extends SQLiteOpenHelper {
 
@@ -28,18 +26,17 @@ public class DbHelper extends SQLiteOpenHelper {
 
     }
 
-    static class DatabaseContract{
+    // since operations are dummy and short, the contract class is defined here
+    static class DatabaseContract {
 
-        public static final String TABLE_NAME="contacts";
+        public static final String TABLE_NAME = "contacts";
 
-        public static final String CREATE_DUMMY_TABLE="CREATE TABLE "+TABLE_NAME+" (\n" +
+        public static final String CREATE_DUMMY_TABLE = "CREATE TABLE " + TABLE_NAME + " (\n" +
                 " contact_id integer PRIMARY KEY AUTOINCREMENT,\n" +
                 " first_name text NOT NULL\n" +
                 ");";
 
-        public static final String NAME_FIELD="first_name";
-
-        public static final String SELECT_ALL="SELECT * FROM "+TABLE_NAME;
+        public static final String NAME_FIELD = "first_name";
 
 
     }
