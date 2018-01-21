@@ -24,7 +24,7 @@ import javax.crypto.NoSuchPaddingException;
  * <p></p>
  * <b>{@link #decryptData(String, String)}:</b> to decrypt any encrypted data.
  * <p></p>
- *  <b>{@link #encryptData(String, String)}:</b> to encrypt any data.
+ * <b>{@link #encryptData(String, String)}:</b> to encrypt any data.
  */
 public class KeyStoreManager {
 
@@ -43,6 +43,7 @@ public class KeyStoreManager {
 
     /**
      * Private contructor.
+     *
      * @param context app's context
      */
     private KeyStoreManager(Context context) {
@@ -63,6 +64,7 @@ public class KeyStoreManager {
 
     /**
      * Get a random phrase containing numbers and characters, of length 50-100.
+     *
      * @return A random string.
      */
     public String getNewRandomPhrase() {
@@ -76,8 +78,9 @@ public class KeyStoreManager {
      * If key is not present a new one is generated.
      * To change this flow you can edit {@link KeystoreHelper} class in library source available at:
      * https://github.com/talhahasanzia/android-encryption-helper
+     *
      * @param plainText to be encrypted
-     * @param alias alias against which key will be used.
+     * @param alias     alias against which key will be used.
      * @return an encrypted string
      */
     public String encryptData(String plainText, String alias) {
@@ -112,7 +115,7 @@ public class KeyStoreManager {
      * https://github.com/talhahasanzia/android-encryption-helper
      *
      * @param encryptedText Encrypted text that was encrypted using a private key using alias mention in next argument
-     * @param alias alias to use for decryption.
+     * @param alias         alias to use for decryption.
      * @return plain text if successful decryption happens
      */
     public String decryptData(String encryptedText, String alias) {
@@ -120,18 +123,25 @@ public class KeyStoreManager {
         try {
             return keystoreHelper.decryptString(alias, encryptedText);
         } catch (UnrecoverableEntryException e) {
+            e.printStackTrace();
             return e.getMessage();
         } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
             return e.getMessage();
         } catch (KeyStoreException e) {
+            e.printStackTrace();
             return e.getMessage();
         } catch (NoSuchProviderException e) {
+            e.printStackTrace();
             return e.getMessage();
         } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
             return e.getMessage();
         } catch (InvalidKeyException e) {
+            e.printStackTrace();
             return e.getMessage();
         } catch (IOException e) {
+            e.printStackTrace();
             return e.getMessage();
         }
     }
@@ -155,7 +165,9 @@ public class KeyStoreManager {
             randomData[i] = charactersRange[randomIndex];
         }
 
-        return Arrays.toString(randomData);
+        String result = Arrays.toString(randomData).replaceAll("[^a-zA-Z0-9]", ""); // remove unrecognized characters and symbols
+
+        return result;
     }
 
 

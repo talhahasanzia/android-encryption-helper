@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
 
         SaveDataUtil saveDataUtil = new SaveDataUtil(this);
 
-        String alias = "test_alias7";
+        String alias = "test_alias13";
 
         keyManager = KeyStoreManager.getInstance(this);
 
@@ -34,19 +34,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void init(SaveDataUtil saveDataUtil, String alias) {
+       String TAG="TestInit";
         String key = null;
         if (saveDataUtil.getSecurityPhrase() == null) {
             key = keyManager.getNewRandomPhrase();
 
-
+            Log.d(TAG, "init: generated: "+key);
             String encrypted = keyManager.encryptData(key, alias);
+            Log.d(TAG, "init: encrypted: "+encrypted);
             saveDataUtil.setSecurityPhrase(encrypted);
         }
 
         key = saveDataUtil.getSecurityPhrase();
 
+        Log.d(TAG, "init: from prefs: "+key);
         String decrypted = keyManager.decryptData(key, alias);
-
+        Log.d(TAG, "init: after decrypt: "+decrypted);
         mDbUtil = new DbUtil(this, decrypted);
     }
 

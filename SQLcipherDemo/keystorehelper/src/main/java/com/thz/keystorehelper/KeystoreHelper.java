@@ -35,10 +35,8 @@ import javax.crypto.NoSuchPaddingException;
 import javax.security.auth.x500.X500Principal;
 
 /**
- * Created by Talha Hasan Zia on 20-Jan-18.
- * <p></p><b>Description:</b><p></p> Why class was created?
+ * <p></p><b>Description:</b><p></p> Helper class for low level Keystore operations
  * <p></p>
- * <b>Public Methods:</b><p></p> Only listing to public methods usage.
  */
 class KeystoreHelper {
     private static final String CIPHER_TYPE = "RSA/ECB/PKCS1Padding";
@@ -68,40 +66,14 @@ class KeystoreHelper {
     }
 
 
-    public void createNewKeysIfNotExist(String alias) throws NullPointerException, KeyStoreException, InvalidAlgorithmParameterException, NoSuchProviderException, NoSuchAlgorithmException {
-        KeyPair keyPair = null;
-
-        // Create new key if needed
-        if (!keyStore.containsAlias(alias)) {
-            Calendar start = Calendar.getInstance();
-            Calendar end = Calendar.getInstance();
-            end.add(Calendar.YEAR, 1);
-            KeyPairGeneratorSpec spec = new KeyPairGeneratorSpec.Builder(context)
-                    .setAlias(alias)
-                    .setSubject(new X500Principal(PRINCIPLE))
-                    .setSerialNumber(BigInteger.ONE)
-                    .setStartDate(start.getTime())
-                    .setEndDate(end.getTime())
-                    .build();
-            KeyPairGenerator generator = KeyPairGenerator.getInstance(ALGORITHM, KEYSTORE);
-            generator.initialize(spec);
-
-            generator.generateKeyPair();
-
-        }
-
-    }
-
-
     public String encryptString(String alias, String plainText) throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException, IOException, UnrecoverableEntryException, KeyStoreException, InvalidAlgorithmParameterException {
         String encryptedText = "";
-        createKeys(context,alias);
+        createKeys(context, alias);
         KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry) keyStore.getEntry(alias, null);
         RSAPublicKey publicKey = (RSAPublicKey) privateKeyEntry.getCertificate().getPublicKey();
 
 
-
-        Cipher inCipher = Cipher.getInstance(CIPHER_TYPE);
+        Cipher inCipher = getCipher();
         inCipher.init(Cipher.ENCRYPT_MODE, publicKey);
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -122,7 +94,7 @@ class KeystoreHelper {
         KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry) keyStore.getEntry(alias, null);
 //        RSAPrivateKey privateKey = (RSAPrivateKey) privateKeyEntry.getPrivateKey();
 
-        Cipher output = Cipher.getInstance(CIPHER_TYPE);
+        Cipher output =getCipher();
         output.init(Cipher.DECRYPT_MODE, privateKeyEntry.getPrivateKey());
 
         String cipherText = encryptedText;
@@ -146,30 +118,28 @@ class KeystoreHelper {
         return decryptedText;
     }
 
-
+    /**
+     * Creates RSA Public Private Key pair against given alias.<p></p>
+     * Key will be accessible using this alias only.
+     *
+     * @param context app context
+     * @param alias alias against which this RSA pair will be generated.
+     * @throws NoSuchProviderException
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidAlgorithmParameterException
+     * @throws KeyStoreException
+     */
     public void createKeys(Context context, String alias) throws NoSuchProviderException,
             NoSuchAlgorithmException, InvalidAlgorithmParameterException, KeyStoreException {
-        // BEGIN_INCLUDE(create_valid_dates)
-        // Create a start and end time, for the validity range of the key pair that's about to be
-        // generated.
+
 
         if (!keyStore.containsAlias(alias)) {
             Calendar start = new GregorianCalendar();
             Calendar end = new GregorianCalendar();
             end.add(Calendar.YEAR, 100);
-            //END_INCLUDE(create_valid_dates)
-
-            // BEGIN_INCLUDE(create_keypair)
-            // Initialize a KeyPair generator using the the intended algorithm (in this example, RSA
-            // and the KeyStore.  This example uses the AndroidKeyStore.
             KeyPairGenerator kpGenerator = KeyPairGenerator
                     .getInstance(ALGORITHM,
                             KEYSTORE);
-            // END_INCLUDE(create_keypair)
-
-            // BEGIN_INCLUDE(create_spec)
-            // The KeyPairGeneratorSpec object is how parameters for your key pair are passed
-            // to the KeyPairGenerator.
             AlgorithmParameterSpec spec;
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
@@ -192,10 +162,10 @@ class KeystoreHelper {
             } else {
                 // On Android M or above, use the KeyGenparameterSpec.Builder and specify permitted
                 // properties  and restrictions of the key.
-                spec = new KeyGenParameterSpec.Builder(alias, KeyProperties.PURPOSE_SIGN)
+                spec = new KeyGenParameterSpec.Builder(alias, KeyProperties.PURPOSE_DECRYPT)
                         .setCertificateSubject(new X500Principal("CN=" + alias))
                         .setDigests(KeyProperties.DIGEST_SHA256)
-                        .setSignaturePaddings(KeyProperties.SIGNATURE_PADDING_RSA_PKCS1)
+                        .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
                         .setCertificateSerialNumber(BigInteger.valueOf(1337))
                         .setCertificateNotBefore(start.getTime())
                         .setCertificateNotAfter(end.getTime())
@@ -205,7 +175,21 @@ class KeystoreHelper {
             kpGenerator.initialize(spec);
 
             KeyPair kp = kpGenerator.generateKeyPair();
-            Log.d("Public Key: " , kp.getPublic().toString());
+        }
+    }
+
+    // get Cipher object depending on API level
+    private Cipher getCipher() {
+        try {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) { // below android m
+                // error in android 6: InvalidKeyException: Need RSA private or public key
+                return Cipher.getInstance("RSA/ECB/PKCS1Padding", "AndroidOpenSSL");
+            } else {
+                // error in android 5: NoSuchProviderException: Provider not available: AndroidKeyStoreBCWorkaround
+                return Cipher.getInstance("RSA/ECB/PKCS1Padding", "AndroidKeyStoreBCWorkaround");
+            }
+        } catch (Exception exception) {
+            throw new RuntimeException("getCipher: Failed to get an instance of Cipher", exception);
         }
     }
 
