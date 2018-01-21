@@ -1,4 +1,4 @@
-# Android Encryption Helper  [![Code Climate](https://img.shields.io/codeclimate/issues/github/me-and/mdf.svg)](https://github.com/talhahasanzia/android-encryption-helper/issues)   [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+# Android Encryption Helper  [![GitHub issues](https://img.shields.io/github/issues/talhahasanzia/android-encryption-helper.svg)](https://github.com/talhahasanzia/android-encryption-helper/issues)   [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 
 Simple Encryption-Decryption Helper classes for storing text data securely in Android.
