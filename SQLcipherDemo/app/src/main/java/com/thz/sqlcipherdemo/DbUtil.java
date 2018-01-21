@@ -1,9 +1,7 @@
-package com.playground.sqlcipherdemo;
+package com.thz.sqlcipherdemo;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.os.Bundle;
-import android.util.Log;
 
 import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;

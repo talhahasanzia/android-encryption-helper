@@ -1,4 +1,4 @@
-package com.playground.sqlcipherdemo;
+package com.thz.sqlcipherdemo;
 
 import android.content.Context;
 import android.content.SharedPreferences;

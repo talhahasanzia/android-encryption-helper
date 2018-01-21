@@ -1,4 +1,4 @@
-package com.playground.keystorehelper;
+package com.thz.keystorehelper;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

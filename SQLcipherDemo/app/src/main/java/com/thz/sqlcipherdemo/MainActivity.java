@@ -1,11 +1,11 @@
-package com.playground.sqlcipherdemo;
+package com.thz.sqlcipherdemo;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 
-import com.playground.keystorehelper.KeyStoreManager;
+import com.thz.keystorehelper.KeyStoreManager;
 
 import net.sqlcipher.database.SQLiteDatabase;
 

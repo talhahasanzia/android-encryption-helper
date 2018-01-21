@@ -1,4 +1,4 @@
-package com.playground.keystorehelper;
+package com.thz.sqlcipherdemo;
 
 import org.junit.Test;
 
