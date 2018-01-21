@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/SQLcipherDemo.iml" filepath="$PROJECT_DIR$/SQLcipherDemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android-encryption-helper.iml" filepath="$PROJECT_DIR$/android-encryption-helper.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/keystorehelper/keystorehelper.iml" filepath="$PROJECT_DIR$/keystorehelper/keystorehelper.iml" />
     </modules>

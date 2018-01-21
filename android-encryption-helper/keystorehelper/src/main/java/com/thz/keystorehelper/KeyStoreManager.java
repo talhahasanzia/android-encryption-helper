@@ -123,25 +123,18 @@ public class KeyStoreManager {
         try {
             return keystoreHelper.decryptString(alias, encryptedText);
         } catch (UnrecoverableEntryException e) {
-            e.printStackTrace();
             return e.getMessage();
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
             return e.getMessage();
         } catch (KeyStoreException e) {
-            e.printStackTrace();
             return e.getMessage();
         } catch (NoSuchProviderException e) {
-            e.printStackTrace();
             return e.getMessage();
         } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
             return e.getMessage();
         } catch (InvalidKeyException e) {
-            e.printStackTrace();
             return e.getMessage();
         } catch (IOException e) {
-            e.printStackTrace();
             return e.getMessage();
         }
     }
