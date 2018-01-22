@@ -24,11 +24,11 @@ In your project level gradle, add:
     maven { url "http://jitpack.io" }
 ```
 
-In your app level gradle (4.0+), add:
+In your app level gradle **(4.0+)**, add:
 ```
     implementation 'com.github.talhahasanzia:android-encryption-helper:v0.1d'
 ```
-for gradle below 3.0 use:
+for gradle versions **below 4.0** use:
 ```
     compile 'com.github.talhahasanzia:android-encryption-helper:v0.1d'
 ```
