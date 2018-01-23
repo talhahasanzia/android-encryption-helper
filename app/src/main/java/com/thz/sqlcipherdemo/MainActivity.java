@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-
 import com.thz.keystorehelper.KeyStoreManager;
 
 import net.sqlcipher.database.SQLiteDatabase;
@@ -34,22 +33,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void init(SaveDataUtil saveDataUtil, String alias) {
-       String TAG="TestInit";
+        String TAG = "TestInit";
         String key = null;
         if (saveDataUtil.getSecurityPhrase() == null) {
             key = keyManager.getNewRandomPhrase();
 
-            Log.d(TAG, "init: generated: "+key);
+            Log.d(TAG, "init: generated: " + key);
             String encrypted = keyManager.encryptData(key, alias);
-            Log.d(TAG, "init: encrypted: "+encrypted);
+            Log.d(TAG, "init: encrypted: " + encrypted);
             saveDataUtil.setSecurityPhrase(encrypted);
         }
 
         key = saveDataUtil.getSecurityPhrase();
 
-        Log.d(TAG, "init: from prefs: "+key);
+        Log.d(TAG, "init: from prefs: " + key);
         String decrypted = keyManager.decryptData(key, alias);
-        Log.d(TAG, "init: after decrypt: "+decrypted);
+        Log.d(TAG, "init: after decrypt: " + decrypted);
         mDbUtil = new DbUtil(this, decrypted);
     }
 
@@ -57,14 +56,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        //insertDummyData(); // populate table for data
+        insertDummyData(); // populate table for data
 
 
         // check if key encryption operations were performed successfully
         // if its successful then it should show data
         // remember to call inserDummyData() at least once to populate some data
         for (String name : mDbUtil.getDataFromTable()) {
-
             Log.d("MainActivity", "result from db: " + name);
         }
 
