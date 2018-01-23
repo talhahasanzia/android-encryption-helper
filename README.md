@@ -1,4 +1,4 @@
-# Android Encryption Helper  [![GitHub issues](https://img.shields.io/github/issues/talhahasanzia/android-encryption-helper.svg)](https://github.com/talhahasanzia/android-encryption-helper/issues)   [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+# Android Encryption Helper [![Release](https://jitpack.io/v/talhahasanzia/android-encryption-helper.svg)](https://jitpack.io/#talhahasanzia/android-encryption-helper/v0.1d)  [![GitHub issues](https://img.shields.io/github/issues/talhahasanzia/android-encryption-helper.svg)](https://github.com/talhahasanzia/android-encryption-helper/issues)   [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 
 
@@ -24,11 +24,11 @@ In your project level gradle, add:
     maven { url "http://jitpack.io" }
 ```
 
-In your app level gradle (4.0+), add:
+In your app level gradle **(4.0+)**, add:
 ```
     implementation 'com.github.talhahasanzia:android-encryption-helper:v0.1d'
 ```
-for gradle below 3.0 use:
+for gradle versions **below 4.0** use:
 ```
     compile 'com.github.talhahasanzia:android-encryption-helper:v0.1d'
 ```
