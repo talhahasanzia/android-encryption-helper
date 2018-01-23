@@ -1,1 +1,1 @@
-include ':app', ':keystorehelper'
+include ':app', ':encryption-helper'
