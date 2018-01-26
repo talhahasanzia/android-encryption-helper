@@ -84,7 +84,9 @@ Thanks to jitpack.io! Hosted at: https://jitpack.io/#talhahasanzia/android-encry
 
 ## License
 
-This project is licensed under the Apache 2.0 License - see the [LICENSE.md](https://github.com/talhahasanzia/android-encryption-helper/blob/master/LICENSE) file for details
+This project is licensed under the Apache 2.0 License - see the [LICENSE.md](https://github.com/talhahasanzia/android-encryption-helper/blob/master/LICENSE) file for details.
+
+*Sources from Android and Android APIs are subject to the licensing terms as per Android Open Source Project (AOSP).*
 
 ## Acknowledgments
 
