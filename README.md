@@ -70,6 +70,11 @@ The demo project implements a use-case where database password is securely saved
 * [SQLCipher Demo](https://github.com/talhahasanzia/android-encryption-helper/tree/master/sql-cipher-demo) (Library project)
 * [Simple Encryption Demo](https://github.com/talhahasanzia/simplified-demo/)
 
+## Participating in Discussion
+Head over to issues section to find out about current bugs, feature updates or release discussion.
+Also report any bug, or request a feature using right labels.
+To find out how these labels are meant to be used see [Labels.md](https://github.com/talhahasanzia/android-encryption-helper/blob/master/Labels.md) for detailed explanation of each label.
+
 ## Contributing
 
 Contributions are welcomed as long as they dont break the code. Please create an issue and have a discussion before pull request.
