@@ -107,6 +107,47 @@ public class KeyStoreManager {
         }
     }
 
+
+    /**
+     * Encrypts an encrypted key against given alias <b>in the background</b>. Caller must pass a reference to {@link EncryptionDecryptionListener} that will deliver the results. <p></p>
+     * This will get private key generated against this alias, and use it to decrypt.
+     * If alias dont match or key is not persistent, this decryption will fail.
+     * Caller must implement onSuccess() and onFailure() methods of {@link EncryptionDecryptionListener} to receive result or errors after background process is completed.
+     *
+     * To change this implementation you can edit {@link KeystoreHelper} class in library source available at:
+     * https://github.com/talhahasanzia/android-encryption-helper
+     *
+     * @param data Encrypted text that was encrypted using a private key using alias mention in next argument
+     * @param alias         alias to use for decryption.
+     * @param encryptionDecryptionListener a listener that Activity or Fragment must implement (or have its objects)
+     * @return plain text if successful decryption happens
+     * <br> to receive results or failure messages after backgroung operations.
+     */
+    public void encryptDataAsync(String data, String alias, EncryptionDecryptionListener encryptionDecryptionListener) {
+
+
+        try {
+             keystoreHelper.encryptStringAsync(alias, data,encryptionDecryptionListener);
+        } catch (NoSuchPaddingException e) {
+            // e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            // e.printStackTrace();
+        } catch (NoSuchProviderException e) {
+            // e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            // e.printStackTrace();
+        } catch (IOException e) {
+            // e.printStackTrace();
+        } catch (UnrecoverableEntryException e) {
+            // e.printStackTrace();
+        } catch (KeyStoreException e) {
+            // e.printStackTrace();
+        } catch (InvalidAlgorithmParameterException e) {
+            // e.printStackTrace();
+        }
+    }
+
+
     /**
      * Decrypts an encrypted key against given alias. <p></p>
      * This will get private key generated against this alias, and use it to decrypt.
@@ -140,6 +181,46 @@ public class KeyStoreManager {
     }
 
 
+    /**
+     * Decrypts an encrypted key against given alias <b>in the background</b>. Caller must pass a reference to {@link EncryptionDecryptionListener} that will deliver the results. <p></p>
+     * This will get private key generated against this alias, and use it to decrypt.
+     * If alias dont match or key is not persistent, this decryption will fail.
+     * Caller must implement onSuccess() and onFailure() methods of {@link EncryptionDecryptionListener} to receive result or errors after background process is completed.
+     *
+     * To change this implementation you can edit {@link KeystoreHelper} class in library source available at:
+     * https://github.com/talhahasanzia/android-encryption-helper
+     *
+     * @param data Encrypted text that was encrypted using a private key using alias mention in next argument
+     * @param alias         alias to use for decryption.
+     * @param encryptionDecryptionListener a listener that Activity or Fragment must implement (or have its objects)
+     * @return plain text if successful decryption happens
+     * <br> to receive results or failure messages after backgroung operations.
+     */
+    public void decryptDataAsync(String data, String alias, EncryptionDecryptionListener encryptionDecryptionListener) {
+
+
+        try {
+            keystoreHelper.decryptStringAsync(alias, data,encryptionDecryptionListener);
+        } catch (NoSuchPaddingException e) {
+            // e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            // e.printStackTrace();
+        } catch (NoSuchProviderException e) {
+            // e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            // e.printStackTrace();
+        } catch (IOException e) {
+            // e.printStackTrace();
+        } catch (UnrecoverableEntryException e) {
+            // e.printStackTrace();
+        } catch (KeyStoreException e) {
+            // e.printStackTrace();
+        } catch (InvalidAlgorithmParameterException e) {
+            // e.printStackTrace();
+        }
+    }
+
+
     private String getRandomText() {
         Random randomizer = new Random();
 
@@ -162,6 +243,7 @@ public class KeyStoreManager {
 
         return result;
     }
+
 
 
 }

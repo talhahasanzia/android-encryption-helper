@@ -3,9 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/android-encryption-helper.iml" filepath="$PROJECT_DIR$/android-encryption-helper.iml" />
+      <module fileurl="file://C:\Users\VD\Documents\AndroidProjects\android-encryption-helper\sql-cipher-demo\app.iml" filepath="C:\Users\VD\Documents\AndroidProjects\android-encryption-helper\sql-cipher-demo\app.iml" />
       <module fileurl="file://$PROJECT_DIR$/encryption-helper/encryption-helper.iml" filepath="$PROJECT_DIR$/encryption-helper/encryption-helper.iml" />
       <module fileurl="file://C:\Users\VD\Documents\AndroidProjects\android-encryption-helper\encryption-helper\keystorehelper.iml" filepath="C:\Users\VD\Documents\AndroidProjects\android-encryption-helper\encryption-helper\keystorehelper.iml" />
-      <module fileurl="file://$PROJECT_DIR$/sql-cipher-demo/app.iml" filepath="$PROJECT_DIR$/sql-cipher-demo/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sql-cipher-demo/sql-cipher-demo.iml" filepath="$PROJECT_DIR$/sql-cipher-demo/sql-cipher-demo.iml" />
     </modules>
   </component>
 </project>

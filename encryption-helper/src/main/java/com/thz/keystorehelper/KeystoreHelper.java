@@ -38,12 +38,13 @@ import javax.security.auth.x500.X500Principal;
  * <p></p>
  */
 class KeystoreHelper {
+
     private static final String CIPHER_TYPE = "RSA/ECB/PKCS1Padding";
     private static final String CIPHER_PROVIDER = "AndroidOpenSSL";
     private static final String ALGORITHM = "RSA";
     private static final String PRINCIPLE = "CN=ABC, O=Android Authority";
     private static final String KEYSTORE = "AndroidKeyStore";
-    private static final String CHARSET = "UTF-8";
+    public static final String CHARSET = "UTF-8";
 
 
     private Context context;
@@ -86,6 +87,28 @@ class KeystoreHelper {
 
         return encryptedText;
     }
+
+    public void  encryptStringAsync(String alias, String data, EncryptionDecryptionListener encryptionDecryptionListener) throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException, IOException, UnrecoverableEntryException, KeyStoreException, InvalidAlgorithmParameterException {
+
+        try {
+            TasksRepo tasksRepo=new TasksRepo(this);
+            tasksRepo.executeEncryptionTask(data, alias,encryptionDecryptionListener);
+        } catch (CertificateException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void  decryptStringAsync(String alias, String data, EncryptionDecryptionListener encryptionDecryptionListener) throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException, IOException, UnrecoverableEntryException, KeyStoreException, InvalidAlgorithmParameterException {
+
+        try {
+            TasksRepo tasksRepo=new TasksRepo(this);
+            tasksRepo.executeDecryptionTask(data, alias,encryptionDecryptionListener);
+        } catch (CertificateException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public String decryptString(String alias, String encryptedText) throws UnrecoverableEntryException, NoSuchAlgorithmException, KeyStoreException, NoSuchProviderException, NoSuchPaddingException, InvalidKeyException, IOException {
 
@@ -178,7 +201,7 @@ class KeystoreHelper {
     }
 
     // get Cipher object depending on API level
-    private Cipher getCipher() {
+    public Cipher getCipher() {
         try {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) { // below android m
                 // error in android 6: InvalidKeyException: Need RSA private or public key
