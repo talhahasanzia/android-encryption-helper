@@ -22,3 +22,6 @@ Following are the labels we currently use in our issues section:
 **news and updates** - News and updates thread regarding future releases and upcoming changes to the project.
 
 **wont fix** - the reported issue cannot be fixed due to either technical or business reasons.
+
+**known issue** - Developer knows this behavior is not correct and needs to discuss or second opinion before finalising the work.
+
