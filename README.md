@@ -6,7 +6,7 @@ Simple Encryption-Decryption Library containing helper classes for encrypting te
 
 
 ## Release
-Available Version:  [v0.1d](https://github.com/talhahasanzia/android-encryption-helper/releases/tag/v0.1d) on [jitpack.io](https://jitpack.io/#talhahasanzia/android-encryption-helper/v0.1d) 
+Available Version:  [0.2](https://github.com/talhahasanzia/android-encryption-helper/releases/tag/0.2) on [jitpack.io](https://jitpack.io/#talhahasanzia/android-encryption-helper/0.2) 
 
 
 ## Library Source
@@ -26,11 +26,11 @@ In your project level gradle, add:
 
 In your app level gradle **(4.0+)**, add:
 ```
-    implementation 'com.github.talhahasanzia:android-encryption-helper:v0.1d'
+    implementation 'com.github.talhahasanzia:android-encryption-helper:0.2'
 ```
 for gradle versions **below 4.0** use:
 ```
-    compile 'com.github.talhahasanzia:android-encryption-helper:v0.1d'
+    compile 'com.github.talhahasanzia:android-encryption-helper:0.2'
 ```
 ## Using in your project
 
