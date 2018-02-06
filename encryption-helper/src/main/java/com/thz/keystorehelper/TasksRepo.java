@@ -91,32 +91,12 @@ class TasksRepo {
 
             try {
                 return keystoreHelper.encryptString(alias, data); // simple call to encrypt, but this time its in background thread
-            } catch (NoSuchPaddingException e) {
-                throwError = true;
-                return e.getMessage();
-            } catch (NoSuchAlgorithmException e) {
-                throwError = true;
-                return e.getMessage();
-            } catch (NoSuchProviderException e) {
-                throwError = true;
-                return e.getMessage();
-            } catch (InvalidKeyException e) {
-                throwError = true;
-                return e.getMessage();
-            } catch (IOException e) {
-                throwError = true;
-                return e.getMessage();
-            } catch (UnrecoverableEntryException e) {
-                throwError = true;
-                return e.getMessage();
-            } catch (KeyStoreException e) {
-                throwError = true;
-                return e.getMessage();
-            } catch (InvalidAlgorithmParameterException e) {
+            } catch (NoSuchPaddingException | NoSuchAlgorithmException | NoSuchProviderException | InvalidKeyException
+                    IOException | UnrecoverableEntryException | KeyStoreException |
+                    InvalidAlgorithmParameterException e){
                 throwError = true;
                 return e.getMessage();
             }
-
         }
 
         @Override
@@ -145,25 +125,9 @@ class TasksRepo {
 
             try {
                 return keystoreHelper.decryptString(alias, data);   // simple call to decrypt, but this time its in background thread
-            } catch (NoSuchPaddingException e) {
-                throwError = true;
-                return e.getMessage();
-            } catch (NoSuchAlgorithmException e) {
-                throwError = true;
-                return e.getMessage();
-            } catch (NoSuchProviderException e) {
-                throwError = true;
-                return e.getMessage();
-            } catch (InvalidKeyException e) {
-                throwError = true;
-                return e.getMessage();
-            } catch (IOException e) {
-                throwError = true;
-                return e.getMessage();
-            } catch (UnrecoverableEntryException e) {
-                throwError = true;
-                return e.getMessage();
-            } catch (KeyStoreException e) {
+            } catch (NoSuchPaddingException | NoSuchAlgorithmException | NoSuchProviderException
+                    InvalidKeyException |
+            IOException | UnrecoverableEntryException | KeyStoreException e){
                 throwError = true;
                 return e.getMessage();
             }
