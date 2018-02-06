@@ -22,9 +22,9 @@ import javax.crypto.NoSuchPaddingException;
  * {@link #executeDecryptionTask(String, String, EncryptionDecryptionListener)} A task running in the background for decryption, result will be delegated to its EncryptionDecryptionListener <br><br>
  * {@link #executeEncryptionTask(String, String, EncryptionDecryptionListener)} A task running in background the for encryption, result will be delegated to its EncryptionDecryptionListener
  */
-class TasksRepo {
+class Tasks {
 
-    private KeystoreHelper keystoreHelper; // KeyStore helper instance to be used by this TasksRepo for KeyStore operations.
+    private KeystoreHelper keystoreHelper; // KeyStore helper instance to be used by this Tasks for KeyStore operations.
     private EncryptionDecryptionListener encryptionDecryptionListener; // Global variable to be used by inner classes
 
     /**
@@ -34,7 +34,7 @@ class TasksRepo {
      * @throws KeyStoreException
      * @throws IOException
      */
-    public TasksRepo(KeystoreHelper keystoreHelper) throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
+    public Tasks(KeystoreHelper keystoreHelper) throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
         this.keystoreHelper = keystoreHelper;
     }
 
@@ -91,9 +91,9 @@ class TasksRepo {
 
             try {
                 return keystoreHelper.encryptString(alias, data); // simple call to encrypt, but this time its in background thread
-            } catch (NoSuchPaddingException | NoSuchAlgorithmException | NoSuchProviderException | InvalidKeyException
+            } catch (NoSuchPaddingException | NoSuchAlgorithmException | NoSuchProviderException | InvalidKeyException |
                     IOException | UnrecoverableEntryException | KeyStoreException |
-                    InvalidAlgorithmParameterException e){
+                    InvalidAlgorithmParameterException e) {
                 throwError = true;
                 return e.getMessage();
             }
@@ -125,9 +125,9 @@ class TasksRepo {
 
             try {
                 return keystoreHelper.decryptString(alias, data);   // simple call to decrypt, but this time its in background thread
-            } catch (NoSuchPaddingException | NoSuchAlgorithmException | NoSuchProviderException
+            } catch (NoSuchPaddingException | NoSuchAlgorithmException | NoSuchProviderException |
                     InvalidKeyException |
-            IOException | UnrecoverableEntryException | KeyStoreException e){
+                    IOException | UnrecoverableEntryException | KeyStoreException e) {
                 throwError = true;
                 return e.getMessage();
             }

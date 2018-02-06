@@ -91,8 +91,8 @@ class KeystoreHelper {
     public void  encryptStringAsync(String alias, String data, EncryptionDecryptionListener encryptionDecryptionListener) throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException, IOException, UnrecoverableEntryException, KeyStoreException, InvalidAlgorithmParameterException {
 
         try {
-            TasksRepo tasksRepo=new TasksRepo(this);
-            tasksRepo.executeEncryptionTask(data, alias,encryptionDecryptionListener);
+            Tasks tasks =new Tasks(this);
+            tasks.executeEncryptionTask(data, alias,encryptionDecryptionListener);
         } catch (CertificateException e) {
             e.printStackTrace();
         }
@@ -102,8 +102,8 @@ class KeystoreHelper {
     public void  decryptStringAsync(String alias, String data, EncryptionDecryptionListener encryptionDecryptionListener) throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException, IOException, UnrecoverableEntryException, KeyStoreException, InvalidAlgorithmParameterException {
 
         try {
-            TasksRepo tasksRepo=new TasksRepo(this);
-            tasksRepo.executeDecryptionTask(data, alias,encryptionDecryptionListener);
+            Tasks tasks =new Tasks(this);
+            tasks.executeDecryptionTask(data, alias,encryptionDecryptionListener);
         } catch (CertificateException e) {
             e.printStackTrace();
         }
