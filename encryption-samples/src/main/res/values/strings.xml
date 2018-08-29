@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">encryption-sample</string>
+    <string name="database_name">sample_db</string>
+</resources>

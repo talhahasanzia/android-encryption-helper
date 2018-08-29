@@ -1,5 +1,6 @@
 package com.thz.keystorehelper;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 
 import java.io.IOException;
@@ -20,7 +21,7 @@ import javax.crypto.NoSuchPaddingException;
  * <p></p>
  * <b>Public Methods:</b>
  * <p></p>
- * <b>{@link #getInstance(Context)}:</b> to get an instance of this class and start using.
+ * <b>{@link #init(Context)} :</b> initialize this manager with app context.
  * <p></p>
  * <b>{@link #decryptData(String, String)}:</b> to decrypt any encrypted data.
  * <p></p>
@@ -29,25 +30,15 @@ import javax.crypto.NoSuchPaddingException;
 public class KeyStoreManager {
 
 
-    private static KeyStoreManager instance; // instance for public usage
-    private KeystoreHelper keystoreHelper; // keystore helper for low level operations
-    private Context context; // app's context
-
-
-    public static KeyStoreManager getInstance(Context context) {
-        if (instance == null) // check for initialization
-            instance = new KeyStoreManager(context); // initialize
-
-        return instance;
-    }
+    @SuppressLint("StaticFieldLeak")
+    private static KeystoreHelper keystoreHelper; // keystore helper for low level operations
 
     /**
-     * Private contructor.
+     * Initialize Keystore Manager once with app context
      *
-     * @param context app's context
+     * @param context Context of app
      */
-    private KeyStoreManager(Context context) {
-        this.context = context;
+    public static void init(Context context) {
 
         try {
             keystoreHelper = new KeystoreHelper(context);
@@ -62,14 +53,30 @@ public class KeyStoreManager {
         }
     }
 
+
     /**
-     * Get a random phrase containing numbers and characters, of length 50-100.
+     * Get a random phrase containing numbers and characters, of length specified.
      *
+     * @param length length of string to be generated
      * @return A random string.
      */
-    public String getNewRandomPhrase() {
+    public static String getNewRandomPhrase(int length) {
+        Random randomizer = new Random();
 
-        return getRandomText();
+        // create a random string using alphabets and characters
+        char[] charactersRange = "abcdefghijklmnopqrstuvwxyz0123456789".toCharArray();
+
+
+        char[] randomData = new char[length];
+
+        for (int i = 0; i < length - 1; i++) {
+
+            int randomIndex = randomizer.nextInt(35 + 1);
+
+            randomData[i] = charactersRange[randomIndex];
+        }
+
+        return Arrays.toString(randomData).replaceAll("[^a-zA-Z0-9]", "");
     }
 
     /**
@@ -83,7 +90,7 @@ public class KeyStoreManager {
      * @param alias     alias against which key will be used.
      * @return an encrypted string
      */
-    public String encryptData(String plainText, String alias) {
+    public static String encryptData(String plainText, String alias) {
 
 
         try {
@@ -113,37 +120,23 @@ public class KeyStoreManager {
      * This will get private key generated against this alias, and use it to decrypt.
      * If alias dont match or key is not persistent, this decryption will fail.
      * Caller must implement onSuccess() and onFailure() methods of {@link EncryptionDecryptionListener} to receive result or errors after background process is completed.
-     *
+     * <p>
      * To change this implementation you can edit {@link KeystoreHelper} class in library source available at:
      * https://github.com/talhahasanzia/android-encryption-helper
      *
-     * @param data Encrypted text that was encrypted using a private key using alias mention in next argument
-     * @param alias         alias to use for decryption.
+     * @param data                         Encrypted text that was encrypted using a private key using alias mention in next argument
+     * @param alias                        alias to use for decryption.
      * @param encryptionDecryptionListener a listener that Activity or Fragment must implement (or have its objects)
-     * @return plain text if successful decryption happens
-     * <br> to receive results or failure messages after backgroung operations.
+     *                                     <br> to receive results or failure messages after backgroung operations.
      */
-    public void encryptDataAsync(String data, String alias, EncryptionDecryptionListener encryptionDecryptionListener) {
+    public static void encryptDataAsync(String data, String alias, EncryptionDecryptionListener encryptionDecryptionListener) {
 
 
         try {
-             keystoreHelper.encryptStringAsync(alias, data,encryptionDecryptionListener);
-        } catch (NoSuchPaddingException e) {
-            // e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            // e.printStackTrace();
-        } catch (NoSuchProviderException e) {
-            // e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            // e.printStackTrace();
-        } catch (IOException e) {
-            // e.printStackTrace();
-        } catch (UnrecoverableEntryException e) {
-            // e.printStackTrace();
-        } catch (KeyStoreException e) {
-            // e.printStackTrace();
-        } catch (InvalidAlgorithmParameterException e) {
-            // e.printStackTrace();
+            keystoreHelper.encryptStringAsync(alias, data, encryptionDecryptionListener);
+        } catch (NoSuchPaddingException | NoSuchAlgorithmException | NoSuchProviderException | InvalidKeyException | IOException
+                | UnrecoverableEntryException | KeyStoreException | InvalidAlgorithmParameterException e) {
+            encryptionDecryptionListener.onFailure(e.getMessage());
         }
     }
 
@@ -159,23 +152,12 @@ public class KeyStoreManager {
      * @param alias         alias to use for decryption.
      * @return plain text if successful decryption happens
      */
-    public String decryptData(String encryptedText, String alias) {
+    public static String decryptData(String encryptedText, String alias) {
 
         try {
             return keystoreHelper.decryptString(alias, encryptedText);
-        } catch (UnrecoverableEntryException e) {
-            return e.getMessage();
-        } catch (NoSuchAlgorithmException e) {
-            return e.getMessage();
-        } catch (KeyStoreException e) {
-            return e.getMessage();
-        } catch (NoSuchProviderException e) {
-            return e.getMessage();
-        } catch (NoSuchPaddingException e) {
-            return e.getMessage();
-        } catch (InvalidKeyException e) {
-            return e.getMessage();
-        } catch (IOException e) {
+        } catch (UnrecoverableEntryException | NoSuchAlgorithmException | KeyStoreException | NoSuchProviderException | NoSuchPaddingException |
+                InvalidKeyException | IOException e) {
             return e.getMessage();
         }
     }
@@ -186,64 +168,25 @@ public class KeyStoreManager {
      * This will get private key generated against this alias, and use it to decrypt.
      * If alias dont match or key is not persistent, this decryption will fail.
      * Caller must implement onSuccess() and onFailure() methods of {@link EncryptionDecryptionListener} to receive result or errors after background process is completed.
-     *
+     * <p>
      * To change this implementation you can edit {@link KeystoreHelper} class in library source available at:
      * https://github.com/talhahasanzia/android-encryption-helper
      *
-     * @param data Encrypted text that was encrypted using a private key using alias mention in next argument
-     * @param alias         alias to use for decryption.
+     * @param data                         Encrypted text that was encrypted using a private key using alias mention in next argument
+     * @param alias                        alias to use for decryption.
      * @param encryptionDecryptionListener a listener that Activity or Fragment must implement (or have its objects)
-     * @return plain text if successful decryption happens
-     * <br> to receive results or failure messages after backgroung operations.
+     *                                     <br> to receive results or failure messages after backgroung operations.
      */
-    public void decryptDataAsync(String data, String alias, EncryptionDecryptionListener encryptionDecryptionListener) {
+    public static void decryptDataAsync(String data, String alias, EncryptionDecryptionListener encryptionDecryptionListener) {
 
 
         try {
-            keystoreHelper.decryptStringAsync(alias, data,encryptionDecryptionListener);
-        } catch (NoSuchPaddingException e) {
-            // e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            // e.printStackTrace();
-        } catch (NoSuchProviderException e) {
-            // e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            // e.printStackTrace();
-        } catch (IOException e) {
-            // e.printStackTrace();
-        } catch (UnrecoverableEntryException e) {
-            // e.printStackTrace();
-        } catch (KeyStoreException e) {
-            // e.printStackTrace();
-        } catch (InvalidAlgorithmParameterException e) {
-            // e.printStackTrace();
+            keystoreHelper.decryptStringAsync(alias, data, encryptionDecryptionListener);
+        } catch (UnrecoverableEntryException | NoSuchAlgorithmException | KeyStoreException | NoSuchProviderException |
+                NoSuchPaddingException | InvalidKeyException | IOException | InvalidAlgorithmParameterException e) {
+            encryptionDecryptionListener.onFailure(e.getMessage());
         }
     }
-
-
-    private String getRandomText() {
-        Random randomizer = new Random();
-
-        // create a random string using alphabets and characters
-        char[] charactersRange = "abcdefghijklmnopqrstuvwxyz0123456789".toCharArray();
-
-        int n = randomizer.nextInt(100 - 50 + 1) + 50; //
-
-
-        char[] randomData = new char[n];
-
-        for (int i = 0; i < n - 1; i++) {
-
-            int randomIndex = randomizer.nextInt(35 - 0 + 1) + 0;
-
-            randomData[i] = charactersRange[randomIndex];
-        }
-
-        String result = Arrays.toString(randomData).replaceAll("[^a-zA-Z0-9]", ""); // remove unrecognized characters and symbols
-
-        return result;
-    }
-
 
 
 }
