@@ -38,9 +38,9 @@ for gradle versions **below 4.0** use:
 ```
     KeyStoreManager.init(context);
 ```
-* **Step 2- Some Data:** Prepare data to be encrypted, in case of generating some random data use static method getNewRandomPhrase():
+* **Step 2- Some Data:** Prepare data to be encrypted, in case of generating some random data use static method getNewRandomPhrase( numberOfChars ):
 ```
-    KeyStoreManager.getNewRandomPhrase();
+    KeyStoreManager.getNewRandomPhrase(5);
 ```
 * **Step 3- Encrypt:** Call static encrypt with specified Alias to start encryption.
 ```
