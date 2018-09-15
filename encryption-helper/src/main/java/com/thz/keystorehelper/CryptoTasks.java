@@ -8,13 +8,14 @@ import java.security.InvalidKeyException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.ProviderException;
 import java.security.UnrecoverableEntryException;
 import java.security.cert.CertificateException;
 
 import javax.crypto.NoSuchPaddingException;
 
 /**
- * <p></p><b>Description:</b><p></p> Task Factory responsible for providing different Tasks.
+ * <p></p><b>Description:</b><p></p> Task Factory responsible for providing different CryptoTasks.
  * <p></p>
  * This class will hold objects to be used for async operations.<br>This class will instatiate and return AsyncTask types.
  * <p></p>
@@ -22,9 +23,9 @@ import javax.crypto.NoSuchPaddingException;
  * {@link #executeDecryptionTask(String, String, EncryptionDecryptionListener)} A task running in the background for decryption, result will be delegated to its EncryptionDecryptionListener <br><br>
  * {@link #executeEncryptionTask(String, String, EncryptionDecryptionListener)} A task running in background the for encryption, result will be delegated to its EncryptionDecryptionListener
  */
-class Tasks {
+class CryptoTasks {
 
-    private KeystoreHelper keystoreHelper; // KeyStore helper instance to be used by this Tasks for KeyStore operations.
+    private KeystoreHelper keystoreHelper; // KeyStore helper instance to be used by this CryptoTasks for KeyStore operations.
     private EncryptionDecryptionListener encryptionDecryptionListener; // Global variable to be used by inner classes
 
     /**
@@ -34,7 +35,7 @@ class Tasks {
      * @throws KeyStoreException
      * @throws IOException
      */
-    public Tasks(KeystoreHelper keystoreHelper) throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
+    public CryptoTasks(KeystoreHelper keystoreHelper) {
         this.keystoreHelper = keystoreHelper;
     }
 
@@ -91,7 +92,7 @@ class Tasks {
 
             try {
                 return keystoreHelper.encryptString(alias, data); // simple call to encrypt, but this time its in background thread
-            } catch (NoSuchPaddingException | NoSuchAlgorithmException | NoSuchProviderException | InvalidKeyException |
+            } catch (NullPointerException | ProviderException | NoSuchPaddingException | NoSuchAlgorithmException | NoSuchProviderException | InvalidKeyException |
                     IOException | UnrecoverableEntryException | KeyStoreException |
                     InvalidAlgorithmParameterException e) {
                 throwError = true;
@@ -100,7 +101,7 @@ class Tasks {
         }
 
         @Override
-        protected void onPostExecute(String s) throws NullPointerException {
+        protected void onPostExecute(String s)  {
             if (throwError) // exception was caught
                 encryptionDecryptionListener.onFailure(s); // pass exception message to caller
             else
@@ -125,7 +126,7 @@ class Tasks {
 
             try {
                 return keystoreHelper.decryptString(alias, data);   // simple call to decrypt, but this time its in background thread
-            } catch (NoSuchPaddingException | NoSuchAlgorithmException | NoSuchProviderException |
+            } catch ( NullPointerException | ProviderException | NoSuchPaddingException | NoSuchAlgorithmException | NoSuchProviderException |
                     InvalidKeyException |
                     IOException | UnrecoverableEntryException | KeyStoreException e) {
                 throwError = true;
@@ -135,7 +136,7 @@ class Tasks {
         }
 
         @Override
-        protected void onPostExecute(String s) throws NullPointerException {
+        protected void onPostExecute(String s) {
             if (throwError)
                 encryptionDecryptionListener.onFailure(s); // pass exception message to the caller
             else

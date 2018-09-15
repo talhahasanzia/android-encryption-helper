@@ -132,12 +132,9 @@ public class KeyStoreManager {
     public static void encryptDataAsync(String data, String alias, EncryptionDecryptionListener encryptionDecryptionListener) {
 
 
-        try {
+
             keystoreHelper.encryptStringAsync(alias, data, encryptionDecryptionListener);
-        } catch (NoSuchPaddingException | NoSuchAlgorithmException | NoSuchProviderException | InvalidKeyException | IOException
-                | UnrecoverableEntryException | KeyStoreException | InvalidAlgorithmParameterException e) {
-            encryptionDecryptionListener.onFailure(e.getMessage());
-        }
+
     }
 
 
@@ -179,13 +176,8 @@ public class KeyStoreManager {
      */
     public static void decryptDataAsync(String data, String alias, EncryptionDecryptionListener encryptionDecryptionListener) {
 
-
-        try {
             keystoreHelper.decryptStringAsync(alias, data, encryptionDecryptionListener);
-        } catch (UnrecoverableEntryException | NoSuchAlgorithmException | KeyStoreException | NoSuchProviderException |
-                NoSuchPaddingException | InvalidKeyException | IOException | InvalidAlgorithmParameterException e) {
-            encryptionDecryptionListener.onFailure(e.getMessage());
-        }
+
     }
 
 

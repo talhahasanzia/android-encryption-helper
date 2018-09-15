@@ -18,6 +18,7 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.ProviderException;
 import java.security.UnrecoverableEntryException;
 import java.security.cert.CertificateException;
 import java.security.interfaces.RSAPublicKey;
@@ -88,29 +89,24 @@ class KeystoreHelper {
         return encryptedText;
     }
 
-    public void encryptStringAsync(String alias, String data, EncryptionDecryptionListener encryptionDecryptionListener) throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException, IOException, UnrecoverableEntryException, KeyStoreException, InvalidAlgorithmParameterException {
+    public void encryptStringAsync(String alias, String data, EncryptionDecryptionListener encryptionDecryptionListener) {
 
-        try {
-            Tasks tasks = new Tasks(this);
-            tasks.executeEncryptionTask(data, alias, encryptionDecryptionListener);
-        } catch (CertificateException e) {
-            e.printStackTrace();
-        }
+
+            CryptoTasks cryptoTasks = new CryptoTasks(this);
+            cryptoTasks.executeEncryptionTask(data, alias, encryptionDecryptionListener);
+
     }
 
 
-    public void decryptStringAsync(String alias, String data, EncryptionDecryptionListener encryptionDecryptionListener) throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException, IOException, UnrecoverableEntryException, KeyStoreException, InvalidAlgorithmParameterException {
+    public void decryptStringAsync(String alias, String data, EncryptionDecryptionListener encryptionDecryptionListener) {
 
-        try {
-            Tasks tasks = new Tasks(this);
-            tasks.executeDecryptionTask(data, alias, encryptionDecryptionListener);
-        } catch (CertificateException e) {
-            e.printStackTrace();
-        }
+
+            CryptoTasks cryptoTasks = new CryptoTasks(this);
+            cryptoTasks.executeDecryptionTask(data, alias, encryptionDecryptionListener);
     }
 
 
-    public String decryptString(String alias, String encryptedText) throws UnrecoverableEntryException, NoSuchAlgorithmException, KeyStoreException, NoSuchProviderException, NoSuchPaddingException, InvalidKeyException, IOException {
+    public String decryptString(String alias, String encryptedText) throws ProviderException,UnrecoverableEntryException, NoSuchAlgorithmException, KeyStoreException, NoSuchProviderException, NoSuchPaddingException, InvalidKeyException, IOException {
 
         String decryptedText = "";
         KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry) keyStore.getEntry(alias, null);
@@ -148,7 +144,7 @@ class KeystoreHelper {
      * @throws InvalidAlgorithmParameterException
      * @throws KeyStoreException
      */
-    private void createKeys(Context context, String alias) throws NoSuchProviderException,
+    private void createKeys(Context context, String alias) throws ProviderException,NoSuchProviderException,
             NoSuchAlgorithmException, InvalidAlgorithmParameterException, KeyStoreException {
 
         int serial = 1337;
