@@ -1,4 +1,4 @@
-# Android Encryption Helper [![Release](https://jitpack.io/v/talhahasanzia/android-encryption-helper.svg)](https://jitpack.io/#talhahasanzia/android-encryption-helper/0.3)  [![GitHub issues](https://img.shields.io/github/issues/talhahasanzia/android-encryption-helper.svg)](https://github.com/talhahasanzia/android-encryption-helper/issues)   [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+# Android Encryption Helper [![Release](https://jitpack.io/v/talhahasanzia/android-encryption-helper.svg)](https://jitpack.io/#talhahasanzia/android-encryption-helper/0.3.1)  [![GitHub issues](https://img.shields.io/github/issues/talhahasanzia/android-encryption-helper.svg)](https://github.com/talhahasanzia/android-encryption-helper/issues)   [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 
 
@@ -6,7 +6,7 @@ Simple Encryption-Decryption Library containing helper classes for encrypting te
 
 
 ## Release
-Available Version:  [0.3](https://github.com/talhahasanzia/android-encryption-helper/releases/tag/0.3) on [jitpack.io](https://jitpack.io/#talhahasanzia/android-encryption-helper/0.3) 
+Available Version:  [0.3](https://github.com/talhahasanzia/android-encryption-helper/releases/tag/0.3.1) on [jitpack.io](https://jitpack.io/#talhahasanzia/android-encryption-helper/0.3.1) 
 
 
 ## Library Source
@@ -26,11 +26,11 @@ In your project level gradle, add:
 
 In your app level gradle **(4.0+)**, add:
 ```
-    implementation 'com.github.talhahasanzia:android-encryption-helper:0.3'
+    implementation 'com.github.talhahasanzia:android-encryption-helper:0.3.1'
 ```
 for gradle versions **below 4.0** use:
 ```
-    compile 'com.github.talhahasanzia:android-encryption-helper:0.3'
+    compile 'com.github.talhahasanzia:android-encryption-helper:0.3.1'
 ```
 ## Using in your project
 
