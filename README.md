@@ -6,7 +6,7 @@ Simple Encryption-Decryption Library containing helper classes for encrypting te
 
 
 ## Release
-Available Version:  [0.3](https://github.com/talhahasanzia/android-encryption-helper/releases/tag/0.3.1) on [jitpack.io](https://jitpack.io/#talhahasanzia/android-encryption-helper/0.3.1) 
+Available Version:  [0.3.1](https://github.com/talhahasanzia/android-encryption-helper/releases/tag/0.3.1) on [jitpack.io](https://jitpack.io/#talhahasanzia/android-encryption-helper/0.3.1) 
 
 
 ## Library Source
