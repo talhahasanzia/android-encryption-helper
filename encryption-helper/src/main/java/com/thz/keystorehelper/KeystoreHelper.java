@@ -205,7 +205,7 @@ class KeystoreHelper {
                 return Cipher.getInstance(CIPHER_TYPE, CIPHER_PROVIDER_ANDROID);
             }
         } catch (Exception exception) {
-            throw new RuntimeException("getCipher: Failed to get an instance of Cipher", exception);
+            throw new RuntimeException("Failed to get an instance of Cipher", exception);
         }
     }
 
