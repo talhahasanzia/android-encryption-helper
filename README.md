@@ -1,4 +1,4 @@
-# Android Encryption Helper [![Release](https://jitpack.io/v/talhahasanzia/android-encryption-helper.svg)](https://jitpack.io/#talhahasanzia/android-encryption-helper/v0.1d)  [![GitHub issues](https://img.shields.io/github/issues/talhahasanzia/android-encryption-helper.svg)](https://github.com/talhahasanzia/android-encryption-helper/issues)   [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+# Android Encryption Helper [![Release](https://jitpack.io/v/talhahasanzia/android-encryption-helper.svg)](https://jitpack.io/#talhahasanzia/android-encryption-helper/0.3)  [![GitHub issues](https://img.shields.io/github/issues/talhahasanzia/android-encryption-helper.svg)](https://github.com/talhahasanzia/android-encryption-helper/issues)   [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 
 
@@ -6,7 +6,7 @@ Simple Encryption-Decryption Library containing helper classes for encrypting te
 
 
 ## Release
-Available Version:  [0.2](https://github.com/talhahasanzia/android-encryption-helper/releases/tag/0.2) on [jitpack.io](https://jitpack.io/#talhahasanzia/android-encryption-helper/0.2) 
+Available Version:  [0.3](https://github.com/talhahasanzia/android-encryption-helper/releases/tag/0.3) on [jitpack.io](https://jitpack.io/#talhahasanzia/android-encryption-helper/0.3) 
 
 
 ## Library Source
@@ -26,32 +26,32 @@ In your project level gradle, add:
 
 In your app level gradle **(4.0+)**, add:
 ```
-    implementation 'com.github.talhahasanzia:android-encryption-helper:0.2'
+    implementation 'com.github.talhahasanzia:android-encryption-helper:0.3'
 ```
 for gradle versions **below 4.0** use:
 ```
-    compile 'com.github.talhahasanzia:android-encryption-helper:0.2'
+    compile 'com.github.talhahasanzia:android-encryption-helper:0.3'
 ```
 ## Using in your project
 
-* **Step 1- KeyStoreManager object:** Get an instance to KeyStoreManager using getInstance()
+* **Step 1- KeyStoreManager initialization:** Initialize KeyStoreManager using init()
 ```
-    KeyStoreManager keyStoreManager=KeyStoreManager.getInstance(context);
+    KeyStoreManager.init(context);
 ```
-* **Step 2- Some Data:** Prepare data to be encrypted, in case of generating some random data use:
+* **Step 2- Some Data:** Prepare data to be encrypted, in case of generating some random data use static method getNewRandomPhrase( numberOfChars ):
 ```
-    String randomPhrase=keyStoreManager.getNewRandomPhrase();
+    KeyStoreManager.getNewRandomPhrase(5);
 ```
-* **Step 3- Encrypt:** Call encrypt with specified Alias to start encryption.
+* **Step 3- Encrypt:** Call static encrypt with specified Alias to start encryption.
 ```
-    String encrypt=keyStoreManager.encryptData(randomPhrase,"testAlias");
+    String encrypt=KeyStoreManager.encryptData(randomPhrase,"testAlias");
 ```
 * **Step 4- Saving Encrypted Data:** Now you can save this encrypted text in a file, SharedPrefs or as DB entry. This can be used later anytime by the app. And only this device specific instance of app will be able to decrypt it. (Securely)
 
 
 * **Step 5- Decrypt:** Once saving mechanism is decided, retrieve encrypted data and call decrypt which can be used to make data available in its original form again.
 ```
-    String decrypt=keyStoreManager.decryptData(encrypt,"testAlias");
+    String decrypt=KeyStoreManager.decryptData(encrypt,"testAlias");
 ```
 
 ### How this works?
@@ -67,8 +67,8 @@ for gradle versions **below 4.0** use:
 
 The demo project implements a use-case where database password is securely saved in shared preferences in encrypted form. No one can open database without decrypted password. This encrypted text can only be decrypted at runtime using private keys provided by KeyStore API against specified alias.
 
-* [SQLCipher Demo](https://github.com/talhahasanzia/android-encryption-helper/tree/master/sql-cipher-demo) (Library project)
-* [Simple Encryption Demo](https://github.com/talhahasanzia/simplified-demo/)
+* [Encryption Sample](https://github.com/talhahasanzia/android-encryption-helper/tree/master/encryption-samples) (Library project)
+* [Simple Encryption Demo](https://github.com/talhahasanzia/simplified-demo/) [OUTDATED]
 
 ## Participating in Discussion
 Head over to issues section to find out about current bugs, feature updates or release discussion.
