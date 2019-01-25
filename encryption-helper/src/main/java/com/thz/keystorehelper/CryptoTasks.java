@@ -1,5 +1,6 @@
 package com.thz.keystorehelper;
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 
 import java.io.IOException;
@@ -12,6 +13,8 @@ import java.security.ProviderException;
 import java.security.UnrecoverableEntryException;
 import java.security.cert.CertificateException;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 /**
@@ -20,8 +23,8 @@ import javax.crypto.NoSuchPaddingException;
  * This class will hold objects to be used for async operations.<br>This class will instatiate and return AsyncTask types.
  * <p></p>
  * <b>Provides:</b><br><br>
- * {@link #executeDecryptionTask(String, String, EncryptionDecryptionListener)} A task running in the background for decryption, result will be delegated to its EncryptionDecryptionListener <br><br>
- * {@link #executeEncryptionTask(String, String, EncryptionDecryptionListener)} A task running in background the for encryption, result will be delegated to its EncryptionDecryptionListener
+ * {@link #executeDecryptionTask(String, String, String, String, String, EncryptionDecryptionListener)} A task running in the background for decryption, result will be delegated to its EncryptionDecryptionListener <br><br>
+ * {@link #executeEncryptionTask(String, String, String, String, String, EncryptionDecryptionListener)} A task running in background the for encryption, result will be delegated to its EncryptionDecryptionListener
  */
 class CryptoTasks {
 
@@ -30,12 +33,8 @@ class CryptoTasks {
 
     /**
      * @param keystoreHelper {@link KeystoreHelper } class for KeyStore operations
-     * @throws CertificateException
-     * @throws NoSuchAlgorithmException
-     * @throws KeyStoreException
-     * @throws IOException
      */
-    public CryptoTasks(KeystoreHelper keystoreHelper) {
+    CryptoTasks(KeystoreHelper keystoreHelper) {
         this.keystoreHelper = keystoreHelper;
     }
 
@@ -46,14 +45,14 @@ class CryptoTasks {
      * which will be used to deliver processed data once task is finished successfully,<br>
      * or failure message in other cases.
      *
-     * @param data                         data to be encrypted
+     * @param plainText                    data to be encrypted
      * @param alias                        alias (key against which the Keystore will retrieve private keys)
      * @param encryptionDecryptionListener Callback object which will deliver results of this Task.
      */
-    public void executeEncryptionTask(String data, String alias, EncryptionDecryptionListener encryptionDecryptionListener) {
+    void executeEncryptionTask(String keyStoreFile, String keyStorePassword, String alias, String aliasPassword, String plainText, EncryptionDecryptionListener encryptionDecryptionListener) {
         this.encryptionDecryptionListener = encryptionDecryptionListener;
         EncryptionTask encryptionTask = new EncryptionTask();
-        encryptionTask.execute(data, alias);
+        encryptionTask.execute(keyStoreFile, keyStorePassword, alias, aliasPassword, plainText);
 
     }
 
@@ -64,14 +63,14 @@ class CryptoTasks {
      * which will be used to deliver processed data once decryption task is finished successfully,<br>
      * or failure message in other cases.
      *
-     * @param data                         data to be decrypted
+     * @param encryptedText                data to be decrypted
      * @param alias                        alias (key against which the Keystore will retrieve private keys)
      * @param encryptionDecryptionListener Callback object which will deliver results of this Task.
      */
-    public void executeDecryptionTask(String data, String alias, EncryptionDecryptionListener encryptionDecryptionListener) {
+    void executeDecryptionTask(String keyStoreFile, String keyStorePassword, String alias, String aliasPassword, String encryptedText, EncryptionDecryptionListener encryptionDecryptionListener) {
         this.encryptionDecryptionListener = encryptionDecryptionListener;
         DecryptionTask decryptionTask = new DecryptionTask();
-        decryptionTask.execute(data, alias);
+        decryptionTask.execute(keyStoreFile, keyStorePassword, alias, aliasPassword, encryptedText);
 
     }
 
@@ -81,27 +80,33 @@ class CryptoTasks {
      * The {@link #execute(Object[])} call expects first parameter to be a Data for which the encryption will be performed,<br>
      * and second parameter to be alias i.e. key for getting keys from KeyStore.
      */
+    @SuppressLint("StaticFieldLeak")
     private class EncryptionTask extends AsyncTask<String, Void, String> {
 
         private boolean throwError = false; // signal to call onFailure() in case of exception
 
         @Override
         protected String doInBackground(String... strings) { // this method runs off the Main thread
-            String data = strings[0]; // first parameter must be data
-            String alias = strings[1]; // Second parameter must be alias
+
+            String keystoreFile = strings[0]; //  must be keystore filename
+            String keystorePassword = strings[1]; // must be keystore password
+            String alias = strings[2]; // must be alias
+            String aliasPassword = strings[3]; //  must be alias password
+            String encryptedText = strings[4]; //  must be data
+
 
             try {
-                return keystoreHelper.encryptString(alias, data); // simple call to encrypt, but this time its in background thread
+                return keystoreHelper.encryptString(keystoreFile, keystorePassword, alias, aliasPassword, encryptedText); // simple call to encrypt, but this time its in background thread
             } catch (NullPointerException | ProviderException | NoSuchPaddingException | NoSuchAlgorithmException | NoSuchProviderException | InvalidKeyException |
                     IOException | UnrecoverableEntryException | KeyStoreException |
-                    InvalidAlgorithmParameterException e) {
+                    InvalidAlgorithmParameterException | CertificateException e) {
                 throwError = true;
                 return e.getMessage();
             }
         }
 
         @Override
-        protected void onPostExecute(String s)  {
+        protected void onPostExecute(String s) {
             if (throwError) // exception was caught
                 encryptionDecryptionListener.onFailure(s); // pass exception message to caller
             else
@@ -115,20 +120,27 @@ class CryptoTasks {
      * The {@link #execute(Object[])} call expects first parameter to be a Data for which the encryption will be performed,<br>
      * and second parameter to be alias i.e. key for getting keys from KeyStore.
      */
+    @SuppressLint("StaticFieldLeak")
     private class DecryptionTask extends AsyncTask<String, Void, String> {
 
         private boolean throwError = false; // signal to call onFailure() in case of exception is thrown during decryption
 
         @Override
         protected String doInBackground(String... strings) { // this method runs off the Main thread
-            String data = strings[0];   // first parameter is expected to be Data
-            String alias = strings[1];  // second parameter is expected to be alias
+            String keystoreFile = strings[0]; //  must be keystore filename
+            String keystorePassword = strings[1]; // must be keystore password
+            String alias = strings[2]; // must be alias
+            String aliasPassword = strings[3]; //  must be alias password
+            String plainText = strings[4]; //  must be data
 
             try {
-                return keystoreHelper.decryptString(alias, data);   // simple call to decrypt, but this time its in background thread
-            } catch ( NullPointerException | ProviderException | NoSuchPaddingException | NoSuchAlgorithmException | NoSuchProviderException |
+                return keystoreHelper.decryptString(keystoreFile, keystorePassword, alias, aliasPassword, plainText);   // simple call to decrypt, but this time its in background thread
+            } catch (NullPointerException | ProviderException | NoSuchPaddingException | NoSuchAlgorithmException | NoSuchProviderException |
                     InvalidKeyException |
-                    IOException | UnrecoverableEntryException | KeyStoreException e) {
+                    IOException | UnrecoverableEntryException | KeyStoreException | CertificateException | BadPaddingException | IllegalBlockSizeException | InvalidAlgorithmParameterException e) {
+                throwError = true;
+                return e.getMessage();
+            } catch (Exception e) {
                 throwError = true;
                 return e.getMessage();
             }

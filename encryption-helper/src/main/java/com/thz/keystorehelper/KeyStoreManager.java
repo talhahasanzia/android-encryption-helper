@@ -23,9 +23,9 @@ import javax.crypto.NoSuchPaddingException;
  * <p></p>
  * <b>{@link #init(Context)} :</b> initialize this manager with app context.
  * <p></p>
- * <b>{@link #decryptData(String, String)}:</b> to decrypt any encrypted data.
+ * <b>{@link #decryptData(String, String, String, String, String)}:</b> to decrypt any encrypted data.
  * <p></p>
- * <b>{@link #encryptData(String, String)}:</b> to encrypt any data.
+ * <b>{@link #encryptData(String, String, String, String, String)}: </b> to encrypt any data.
  */
 public class KeyStoreManager {
 
@@ -40,17 +40,8 @@ public class KeyStoreManager {
      */
     public static void init(Context context) {
 
-        try {
-            keystoreHelper = new KeystoreHelper(context);
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (CertificateException e) {
-            e.printStackTrace();
-        }
+        keystoreHelper = new KeystoreHelper(context);
+
     }
 
 
@@ -90,11 +81,11 @@ public class KeyStoreManager {
      * @param alias     alias against which key will be used.
      * @return an encrypted string
      */
-    public static String encryptData(String plainText, String alias) {
+    public static String encryptData(String keystoreFileName, String keystorePassword, String alias, String aliasPassword, String plainText) {
 
 
         try {
-            return keystoreHelper.encryptString(alias, plainText);
+            return keystoreHelper.encryptString(keystoreFileName, keystorePassword, alias, aliasPassword, plainText);
         } catch (NoSuchPaddingException e) {
             return e.getMessage();
         } catch (NoSuchAlgorithmException e) {
@@ -111,6 +102,8 @@ public class KeyStoreManager {
             return e.getMessage();
         } catch (InvalidAlgorithmParameterException e) {
             return e.getMessage();
+        } catch (CertificateException e) {
+            return e.getMessage();
         }
     }
 
@@ -124,23 +117,22 @@ public class KeyStoreManager {
      * To change this implementation you can edit {@link KeystoreHelper} class in library source available at:
      * https://github.com/talhahasanzia/android-encryption-helper
      *
-     * @param data                         Encrypted text that was encrypted using a private key using alias mention in next argument
+     * @param plainData                    Encrypted text that was encrypted using a private key using alias mention in next argument
      * @param alias                        alias to use for decryption.
      * @param encryptionDecryptionListener a listener that Activity or Fragment must implement (or have its objects)
      *                                     <br> to receive results or failure messages after backgroung operations.
      */
-    public static void encryptDataAsync(String data, String alias, EncryptionDecryptionListener encryptionDecryptionListener) {
+    public static void encryptDataAsync(String keystoreFileName, String keystorePassword, String alias, String aliasPassword, String plainData, EncryptionDecryptionListener encryptionDecryptionListener) {
 
 
-
-            keystoreHelper.encryptStringAsync(alias, data, encryptionDecryptionListener);
+        keystoreHelper.encryptStringAsync(keystoreFileName, keystorePassword, alias, aliasPassword, plainData, encryptionDecryptionListener);
 
     }
 
 
     /**
      * Decrypts an encrypted key against given alias. <p></p>
-     * This will get private key generated against this alias, and use it to decrypt.
+     * This will get a key generated against this alias, and use it to decrypt.
      * If alias dont match or key is not persistent, this decryption will fail.
      * To change this implementation you can edit {@link KeystoreHelper} class in library source available at:
      * https://github.com/talhahasanzia/android-encryption-helper
@@ -149,12 +141,14 @@ public class KeyStoreManager {
      * @param alias         alias to use for decryption.
      * @return plain text if successful decryption happens
      */
-    public static String decryptData(String encryptedText, String alias) {
+    public static String decryptData(String keystoreFileName, String keystorePassword, String alias, String aliasPassword, String encryptedText) {
 
         try {
-            return keystoreHelper.decryptString(alias, encryptedText);
+            return keystoreHelper.decryptString(keystoreFileName, keystorePassword, alias, aliasPassword, encryptedText);
         } catch (UnrecoverableEntryException | NoSuchAlgorithmException | KeyStoreException | NoSuchProviderException | NoSuchPaddingException |
                 InvalidKeyException | IOException e) {
+            return e.getMessage();
+        } catch (Exception e) {
             return e.getMessage();
         }
     }
@@ -162,22 +156,70 @@ public class KeyStoreManager {
 
     /**
      * Decrypts an encrypted key against given alias <b>in the background</b>. Caller must pass a reference to {@link EncryptionDecryptionListener} that will deliver the results. <p></p>
-     * This will get private key generated against this alias, and use it to decrypt.
+     * This will get key generated against this alias, and use it to decrypt.
      * If alias dont match or key is not persistent, this decryption will fail.
      * Caller must implement onSuccess() and onFailure() methods of {@link EncryptionDecryptionListener} to receive result or errors after background process is completed.
      * <p>
      * To change this implementation you can edit {@link KeystoreHelper} class in library source available at:
      * https://github.com/talhahasanzia/android-encryption-helper
      *
-     * @param data                         Encrypted text that was encrypted using a private key using alias mention in next argument
+     * @param encryptedText                Encrypted text that was encrypted using a private key using alias mention in next argument
      * @param alias                        alias to use for decryption.
      * @param encryptionDecryptionListener a listener that Activity or Fragment must implement (or have its objects)
      *                                     <br> to receive results or failure messages after backgroung operations.
      */
-    public static void decryptDataAsync(String data, String alias, EncryptionDecryptionListener encryptionDecryptionListener) {
+    public static void decryptDataAsync(String keystoreFileName, String keystorePassword, String alias, String aliasPassword, String encryptedText, EncryptionDecryptionListener encryptionDecryptionListener) {
 
-            keystoreHelper.decryptStringAsync(alias, data, encryptionDecryptionListener);
+        keystoreHelper.decryptStringAsync(keystoreFileName, keystorePassword, alias, aliasPassword, encryptedText, encryptionDecryptionListener);
 
+    }
+
+
+    /**
+     * Decrypts an encrypted data against given alias using Asymmetric Keys. <p></p>
+     * This will get a private key generated against this alias, and use it to decrypt.
+     * If alias don't match or key is not persistent, this decryption will fail.
+     * To change this implementation you can edit {@link KeystoreHelper} class in library source available at:
+     * https://github.com/talhahasanzia/android-encryption-helper
+     *
+     * @param encryptedText Encrypted text that was encrypted using a private key using alias mention in next argument
+     * @param alias         alias to use for decryption.
+     * @return plain text if successful decryption happens
+     */
+    public static String asymmetricDecryptData(String alias, String encryptedText) {
+
+        try {
+            return keystoreHelper.asymmetricDecryptString(alias, encryptedText);
+        } catch (UnrecoverableEntryException | NoSuchAlgorithmException | KeyStoreException | NoSuchPaddingException |
+                InvalidKeyException | IOException e) {
+            return e.getMessage();
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+    }
+
+
+    /**
+     * Encrypts plain data against given alias using Asymmetric Keys. <p></p>
+     * This will get a public key generated against this alias, and use it to decrypt.
+     * If alias don't match or key is not persistent, this decryption will fail.
+     * To change this implementation you can edit {@link KeystoreHelper} class in library source available at:
+     * https://github.com/talhahasanzia/android-encryption-helper
+     *
+     * @param encryptedText Encrypted text that was encrypted using a private key using alias mention in next argument
+     * @param alias         alias to use for decryption.
+     * @return plain text if successful decryption happens
+     */
+    public static String asymmetricEncryptData(String alias, String encryptedText) {
+
+        try {
+            return keystoreHelper.asymmetricEncryptString(alias, encryptedText);
+        } catch (UnrecoverableEntryException | NoSuchAlgorithmException | KeyStoreException | NoSuchPaddingException |
+                InvalidKeyException | IOException e) {
+            return e.getMessage();
+        } catch (Exception e) {
+            return e.getMessage();
+        }
     }
 
 
