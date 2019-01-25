@@ -5,11 +5,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
 
-
 import com.thz.keystorehelper.EncryptionDecryptionListener;
 import com.thz.keystorehelper.KeyStoreManager;
 
 import net.sqlcipher.database.SQLiteDatabase;
+
+import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+
+import javax.crypto.NoSuchPaddingException;
 
 public class MainActivity extends AppCompatActivity implements EncryptionDecryptionListener {
 
@@ -22,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements EncryptionDecrypt
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -56,7 +67,29 @@ public class MainActivity extends AppCompatActivity implements EncryptionDecrypt
 
 
             addTextResult("testSimple: generated: " + key);
-            String encrypted = KeyStoreManager.encryptData(getPackageName(), "password123", getPackageName(), "password123", key);
+            String encrypted = null;
+
+            try {
+                encrypted = KeyStoreManager.encryptData(getPackageName() + "9.jks", "password123", getPackageName(), "password123", key);
+            } catch (IOException e) {
+                Log.e("ERROR", e.getMessage());
+            } catch (CertificateException e) {
+                Log.e("ERROR", e.getMessage());
+            } catch (NoSuchAlgorithmException e) {
+                Log.e("ERROR", e.getMessage());
+            } catch (UnrecoverableKeyException e) {
+                Log.e("ERROR", e.getMessage());
+            } catch (InvalidKeyException e) {
+                Log.e("ERROR", e.getMessage());
+            } catch (InvalidAlgorithmParameterException e) {
+                Log.e("ERROR", e.getMessage());
+            } catch (NoSuchPaddingException e) {
+                Log.e("ERROR", e.getMessage());
+            } catch (NoSuchProviderException e) {
+                Log.e("ERROR", e.getMessage());
+            } catch (KeyStoreException e) {
+                Log.e("ERROR", e.getMessage());
+            }
 
 
             addTextResult("testSimple: encrypted: " + encrypted);
@@ -68,11 +101,18 @@ public class MainActivity extends AppCompatActivity implements EncryptionDecrypt
 
         addTextResult("testSimple: from prefs: " + key);
 
-        String decrypted = KeyStoreManager.decryptData(getPackageName(), "password123", getPackageName(), "password123", key);
+        String decrypted = null;
+
+        try {
+            decrypted = KeyStoreManager.decryptData(getPackageName() + "9.jks", "password123", getPackageName(), "password123", key);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
         addTextResult("testSimple: after decrypt: " + decrypted);
 
-        mDbUtil = new DbUtil(this, decrypted);
+        // mDbUtil = new DbUtil(this, decrypted);
     }
 
 

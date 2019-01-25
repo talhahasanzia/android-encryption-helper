@@ -244,16 +244,16 @@ class KeyPairHelper {
 
     private SecretKey getSymmetricKey(File keystoreFile, String alias, char[] password) throws CertificateException, NoSuchAlgorithmException, IOException, UnrecoverableKeyException, KeyStoreException {
 
-
         KeyStore keyStore = getDefaultKeystore(keystoreFile, password);
 
         return (SecretKey) keyStore.getKey(alias, password);
     }
 
     private KeyStore getDefaultKeystore(File keystoreFile, char[] keystorePassword)
-            throws CertificateException, NoSuchAlgorithmException, IOException {
+            throws CertificateException, NoSuchAlgorithmException, IOException, KeyStoreException {
 
-        KeyStore keyStore = null;
+
+        KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
 
         if (keystoreFile.exists()) {
             keyStore.load(new FileInputStream(keystoreFile), keystorePassword);

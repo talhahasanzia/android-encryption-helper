@@ -10,6 +10,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.UnrecoverableEntryException;
+import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.Arrays;
 import java.util.Random;
@@ -81,30 +82,10 @@ public class KeyStoreManager {
      * @param alias     alias against which key will be used.
      * @return an encrypted string
      */
-    public static String encryptData(String keystoreFileName, String keystorePassword, String alias, String aliasPassword, String plainText) {
+    public static String encryptData(String keystoreFileName, String keystorePassword, String alias, String aliasPassword, String plainText) throws IOException, CertificateException, NoSuchAlgorithmException, UnrecoverableKeyException, InvalidKeyException, InvalidAlgorithmParameterException, NoSuchPaddingException, NoSuchProviderException, KeyStoreException {
 
+        return keystoreHelper.encryptString(keystoreFileName, keystorePassword, alias, aliasPassword, plainText);
 
-        try {
-            return keystoreHelper.encryptString(keystoreFileName, keystorePassword, alias, aliasPassword, plainText);
-        } catch (NoSuchPaddingException e) {
-            return e.getMessage();
-        } catch (NoSuchAlgorithmException e) {
-            return e.getMessage();
-        } catch (NoSuchProviderException e) {
-            return e.getMessage();
-        } catch (InvalidKeyException e) {
-            return e.getMessage();
-        } catch (IOException e) {
-            return e.getMessage();
-        } catch (UnrecoverableEntryException e) {
-            return e.getMessage();
-        } catch (KeyStoreException e) {
-            return e.getMessage();
-        } catch (InvalidAlgorithmParameterException e) {
-            return e.getMessage();
-        } catch (CertificateException e) {
-            return e.getMessage();
-        }
     }
 
 
@@ -141,16 +122,9 @@ public class KeyStoreManager {
      * @param alias         alias to use for decryption.
      * @return plain text if successful decryption happens
      */
-    public static String decryptData(String keystoreFileName, String keystorePassword, String alias, String aliasPassword, String encryptedText) {
+    public static String decryptData(String keystoreFileName, String keystorePassword, String alias, String aliasPassword, String encryptedText) throws Exception {
 
-        try {
-            return keystoreHelper.decryptString(keystoreFileName, keystorePassword, alias, aliasPassword, encryptedText);
-        } catch (UnrecoverableEntryException | NoSuchAlgorithmException | KeyStoreException | NoSuchProviderException | NoSuchPaddingException |
-                InvalidKeyException | IOException e) {
-            return e.getMessage();
-        } catch (Exception e) {
-            return e.getMessage();
-        }
+        return keystoreHelper.decryptString(keystoreFileName, keystorePassword, alias, aliasPassword, encryptedText);
     }
 
 
