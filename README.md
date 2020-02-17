@@ -1,6 +1,8 @@
 # Android Encryption Helper [![Release](https://jitpack.io/v/talhahasanzia/android-encryption-helper.svg)](https://jitpack.io/#talhahasanzia/android-encryption-helper/0.3.1)  [![GitHub issues](https://img.shields.io/github/issues/talhahasanzia/android-encryption-helper.svg)](https://github.com/talhahasanzia/android-encryption-helper/issues)   [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 
+`[DEPRECATED]` Project no longer maintained. See [Jetpack Security](https://developer.android.com/jetpack/androidx/releases/security) (requires minimum API 23)
+
 
 Simple Encryption-Decryption Library containing helper classes for encrypting text data in Android. This will alow apps to decrypt data on runtime only (thanks to KeyStore API), making data storage more secure against concerns like reversing apk or decompilation of jars.
 
